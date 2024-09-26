@@ -7,9 +7,10 @@ import (
 )
 
 type Song interface {
-	CreateSong(input model.Song) error
+	CreateSong(input model.Song) (string, error)
 	UpdateSong(id string, input model.SongUpdate) error
 	DeleteSong(id string) error
+	GetSongs(group, song, createdAt, text, patronymic string, offset, limit int) ([]model.Song, error)
 }
 
 type Repository struct {

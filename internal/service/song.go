@@ -2,12 +2,10 @@ package service
 
 import (
 	"encoding/json"
-	"github.com/AwesomeXjs/music-lib/internal/helpers"
 	"github.com/AwesomeXjs/music-lib/internal/model"
 	"github.com/AwesomeXjs/music-lib/internal/repository"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
 	"io"
 )
 
@@ -27,13 +25,13 @@ func NewSongService(repo *repository.Repository, logger logger.Logger, sideServi
 	}
 }
 
-func (s *SongService) CreateSong(input model.SongCreate) error {
+func (s *SongService) CreateSong(input model.SongCreate) (string, error) {
 	req, err := s.client.GetWithQuery(s.sideServiceUrl,
 		"/info",
 		QueryParam{Key: "group", Value: input.Group},
 		QueryParam{Key: "song", Value: input.Song})
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer func(Body io.ReadCloser) {
 		err = Body.Close()
@@ -46,7 +44,11 @@ func (s *SongService) CreateSong(input model.SongCreate) error {
 	reqBody, err := io.ReadAll(req.Body)
 	err = json.Unmarshal(reqBody, &arr1)
 	if len(arr1) == 0 {
-		return errors.New(helpers.SONGS_NOT_FOUND)
+		return s.repo.CreateSong(model.Song{
+			Id:    uuid.New().String(),
+			Group: input.Group,
+			Song:  input.Song,
+		})
 	}
 
 	return s.repo.CreateSong(model.Song{
@@ -65,4 +67,9 @@ func (s *SongService) UpdateSong(id string, input model.SongUpdate) error {
 
 func (s *SongService) DeleteSong(id string) error {
 	return s.repo.Song.DeleteSong(id)
+}
+
+func (s *SongService) GetSongs(group, song, createdAt, text, patronymic string, page, limit int) ([]model.Song, error) {
+	offset := (page - 1) * limit
+	return s.repo.Song.GetSongs(group, song, createdAt, text, patronymic, offset, limit)
 }

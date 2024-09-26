@@ -14,6 +14,24 @@ definitions:
         description: Not Found
         type: string
     type: object
+  model.Song:
+    properties:
+      group:
+        type: string
+      id:
+        type: string
+      patronymic:
+        default: NOT FOUND
+        type: string
+      releaseDate:
+        default: NOT FOUND
+        type: string
+      song:
+        type: string
+      text:
+        default: NOT FOUND
+        type: string
+    type: object
   model.SongCreate:
     properties:
       group:
@@ -26,6 +44,24 @@ definitions:
     - group
     - song
     type: object
+  model.SongUpdate:
+    properties:
+      group:
+        example: Muse
+        type: string
+      patronymic:
+        example: https://www.youtube.com/watch?v=Xsp3_a-PMTw
+        type: string
+      release_date:
+        example: 16.07.2006
+        type: string
+      song:
+        example: Supermassive Black Hole
+        type: string
+      text:
+        example: Ooh baby, don't you know I suffer?
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -33,7 +69,65 @@ info:
   title: Music library API
   version: "1.0"
 paths:
-  /v1/songs/:
+  /v1/songs:
+    get:
+      consumes:
+      - application/json
+      description: get songs from library
+      operationId: get-song
+      parameters:
+      - description: Filter by group
+        in: query
+        name: group
+        type: string
+      - description: Filter by song
+        in: query
+        name: song
+        type: string
+      - description: Filter by created_at
+        in: query
+        name: releaseDate
+        type: string
+      - description: Filter by text
+        in: query
+        name: text
+        type: string
+      - description: Filter by patronymic
+        in: query
+        name: patronymic
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Song'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      summary: Get songs
+      tags:
+      - Song
     post:
       consumes:
       - application/json
@@ -66,6 +160,79 @@ paths:
           schema:
             $ref: '#/definitions/helpers.Response'
       summary: Create song
+      tags:
+      - Song
+  /v1/songs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete song from library
+      operationId: delete-song
+      parameters:
+      - description: delete by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      summary: Delete song
+      tags:
+      - Song
+    put:
+      consumes:
+      - application/json
+      description: Update song
+      operationId: update-song
+      parameters:
+      - description: update by id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: song info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.SongUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      summary: Update song
       tags:
       - Song
 swagger: "2.0"

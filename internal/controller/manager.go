@@ -30,7 +30,8 @@ func (e *Controller) InitRoutes(server *echo.Echo) {
 		// song routes
 		songs := v1.Group("/songs")
 		{
-			songs.POST("/", e.CreateSong)
+			songs.POST("", e.CreateSong)
+			songs.GET("", e.GetSongs)
 			songs.PUT("/:id", e.UpdateSong)
 			songs.DELETE("/:id", e.DeleteSong)
 		}

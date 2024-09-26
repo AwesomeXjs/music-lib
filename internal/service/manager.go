@@ -7,9 +7,10 @@ import (
 )
 
 type Song interface {
-	CreateSong(input model.SongCreate) error
+	CreateSong(input model.SongCreate) (string, error)
 	UpdateSong(id string, input model.SongUpdate) error
 	DeleteSong(id string) error
+	GetSongs(group, song, createdAt, text, patronymic string, page, limit int) ([]model.Song, error)
 }
 
 type Service struct {

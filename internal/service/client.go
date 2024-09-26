@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -18,17 +17,18 @@ type QueryParam struct {
 }
 
 func (c *CustomClient) GetWithQuery(baseUrl, resource string, query ...QueryParam) (*http.Response, error) {
-	inputFormat := func(str string) string {
-		return strings.ReplaceAll(str, " ", "%20")
-	}
-	var queryString string
+	request, err := http.NewRequest(http.MethodGet, baseUrl+resource, nil)
 
-	for _, param := range query {
-		queryString += fmt.Sprintf("%s=%s&", param.Key, inputFormat(param.Value))
+	q := request.URL.Query()
+	for i := range query {
+		q.Add(query[i].Key, query[i].Value)
+		fmt.Println(query[i].Key, query[i].Value)
 	}
-	url := baseUrl + resource + "?" + queryString
-	req, err := c.client.Get(url)
-	req.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Content-Type", "application/json")
+
+	request.URL.RawQuery = q.Encode()
+	req, err := c.client.Get(request.URL.String())
+
 	if err != nil {
 		fmt.Println("error happened", err)
 		return nil, err
