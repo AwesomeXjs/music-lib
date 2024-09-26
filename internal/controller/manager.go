@@ -5,9 +5,9 @@ import (
 	"github.com/AwesomeXjs/music-lib/internal/service"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"github.com/labstack/echo/v4"
-	echoSwagger "github.com/swaggo/echo-swagger"
+	"github.com/swaggo/echo-swagger"
 )
- 
+
 type Controller struct {
 	service *service.Service
 	logger  logger.Logger
@@ -27,10 +27,12 @@ func (e *Controller) InitRoutes(server *echo.Echo) {
 	// App routes
 	v1 := server.Group("/v1")
 	{
-		// todo routes
+		// song routes
 		songs := v1.Group("/songs")
 		{
-			songs.GET("/", e.addSong)
+			songs.POST("/", e.CreateSong)
+			songs.PUT("/:id", e.UpdateSong)
+			songs.DELETE("/:id", e.DeleteSong)
 		}
 	}
 }

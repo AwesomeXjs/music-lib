@@ -1,9 +1,71 @@
 basePath: /
+definitions:
+  helpers.Response:
+    properties:
+      detail:
+        description: Entity post with id 12345 not found
+        type: string
+      request:
+        description: PUT /posts/12345
+        type: string
+      time:
+        type: string
+      title:
+        description: Not Found
+        type: string
+    type: object
+  model.SongCreate:
+    properties:
+      group:
+        example: Muse
+        type: string
+      song:
+        example: Supermassive Black Hole
+        type: string
+    required:
+    - group
+    - song
+    type: object
 host: localhost:8080
 info:
   contact: {}
   description: API Server for Music library application
   title: Music library API
   version: "1.0"
-paths: {}
+paths:
+  /v1/songs/:
+    post:
+      consumes:
+      - application/json
+      description: add song to library
+      operationId: create-song
+      parameters:
+      - description: song info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.SongCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      summary: Create song
+      tags:
+      - Song
 swagger: "2.0"

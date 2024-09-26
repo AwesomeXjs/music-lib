@@ -12,6 +12,9 @@ type Config struct {
 	Password string
 	DBName   string
 	SSLMode  string
+
+	AppPort        string
+	SideServiceUrl string
 }
 
 var (
@@ -29,6 +32,9 @@ func New() *Config {
 			Password: os.Getenv("DB_PASS"),
 			DBName:   os.Getenv("DB_NAME"),
 			SSLMode:  os.Getenv("DB_SSL_MODE"),
+
+			AppPort:        os.Getenv("APP_PORT"),
+			SideServiceUrl: os.Getenv("SIDE_SERVICE_URL"),
 		}
 	})
 	return &config

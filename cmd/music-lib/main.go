@@ -21,13 +21,14 @@ import (
 // @BasePath /
 // @in header
 func main() {
+
 	// logger init
 	myLogger := zaplogger.New()
 
 	// init env config
 	if err := godotenv.Load(); err != nil {
 		fmt.Println(err)
-		// myLogger.FatalMsg("[ ENV ]", "failed to load env variables")
+		myLogger.Fatal("[ ENV ]", "failed to load env variables")
 	}
 
 	config := configs.New()
@@ -41,7 +42,7 @@ func main() {
 	go db.KeepAlivePostgres(postgres, myLogger)
 
 	// init new app
-	myApp := app.New(postgres, myLogger)
+	myApp := app.New(postgres, myLogger, config)
 
 	// start server
 	err = myApp.Run(myLogger, postgres)

@@ -1,11 +1,15 @@
 package repository
 
 import (
+	"github.com/AwesomeXjs/music-lib/internal/model"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"github.com/jmoiron/sqlx"
 )
 
 type Song interface {
+	CreateSong(input model.Song) error
+	UpdateSong(id string, input model.SongUpdate) error
+	DeleteSong(id string) error
 }
 
 type Repository struct {
