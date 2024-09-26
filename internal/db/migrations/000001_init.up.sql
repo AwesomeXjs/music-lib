@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS "songs" (
+    id VARCHAR(255) NOT NULL PRIMARY KEY,
+    "group" VARCHAR(50) NOT NULL,
+    song VARCHAR(50) NOT NULL,
+    release_date VARCHAR(50) NOT NULL,
+    text VARCHAR(255) NOT NULL,
+    patronymic VARCHAR(255) NOT NULL
+)
