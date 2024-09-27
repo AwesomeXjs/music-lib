@@ -36,6 +36,6 @@ func (e *Controller) InitRoutes(server *echo.Echo) {
 			songs.DELETE("/:id", e.DeleteSong)
 			songs.GET("/verse/:id", e.GetVerse)
 		}
-		v1.GET("/all", e.GetAll)
+		v1.GET("/all", e.GetAllFromMockService)
 	}
 }

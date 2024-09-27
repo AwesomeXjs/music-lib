@@ -14,16 +14,16 @@ type Song interface {
 	GetSongs(group, song, createdAt, text, link string, page, limit int) ([]model.Song, error)
 	GetVerse(id string) (string, error)
 	FetchSongData(id string, input model.SongCreate) error
-	GetAll() ([]helpers.MockSongs, error)
+	GetAllFromMockService() ([]helpers.MockSongs, error)
 }
 
 type Service struct {
 	Song
 }
 
-func New(repo *repository.Repository, logger logger.Logger, mockUrl string) *Service {
-	client := helpers.CustomClient{Client: helpers.NewClient(), Logger: logger}
+func New(repo *repository.Repository, logger logger.Logger) *Service {
+	client := helpers.NewCustomClient(logger)
 	return &Service{
-		Song: NewSongService(repo, logger, mockUrl, client),
+		Song: NewSongService(repo, logger, client),
 	}
 }

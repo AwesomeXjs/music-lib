@@ -10,7 +10,7 @@ import (
 	"syscall"
 )
 
-func (app *App) gracefulShutdown(myLogger logger.Logger, database interface{}) error {
+func (app *App) gracefulShutdown(myLogger logger.Logger, database *sqlx.DB) error {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	sig := <-quit
@@ -20,16 +20,9 @@ func (app *App) gracefulShutdown(myLogger logger.Logger, database interface{}) e
 	if err := app.Server.Shutdown(context.Background()); err != nil {
 		return err
 	}
-
-	switch v := database.(type) {
-	case *sqlx.DB:
-		if err := v.Close(); err != nil {
-			myLogger.Debug(helpers.PG_PREFIX, helpers.DISCONNECT_DB+" FAILED TO CLOSE DB")
-			return err
-		}
-	default:
-		myLogger.Info(helpers.PG_PREFIX, helpers.DISCONNECT_DB+" FAILED TO CLOSE DB")
-		return nil
+	if err := database.Close(); err != nil {
+		myLogger.Debug(helpers.PG_PREFIX, helpers.DISCONNECT_DB+" FAILED TO CLOSE DB")
+		return err
 	}
 	return nil
 }

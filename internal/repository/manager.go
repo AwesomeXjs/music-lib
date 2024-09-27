@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"github.com/AwesomeXjs/music-lib/internal/helpers"
 	"github.com/AwesomeXjs/music-lib/internal/model"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"github.com/jmoiron/sqlx"
@@ -19,16 +18,8 @@ type Repository struct {
 	Song
 }
 
-func New(db interface{}, myLogger logger.Logger) *Repository {
-	// проверка типа чтобы мы не зависели от одной базы данных и могли легко переключится на репозиторий с другой бд
-	switch database := db.(type) {
-	case *sqlx.DB:
-		return &Repository{
-			Song: NewSongRepo(database, myLogger),
-		}
-
-	default:
-		myLogger.Fatal(helpers.REPO_PREFIX, helpers.REPO_CREATE_FAILED)
-		return nil
+func New(db *sqlx.DB, myLogger logger.Logger) *Repository {
+	return &Repository{
+		Song: NewSongRepo(db, myLogger),
 	}
 }
