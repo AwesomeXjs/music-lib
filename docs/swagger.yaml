@@ -31,7 +31,7 @@ definitions:
         type: string
       id:
         type: string
-      patronymic:
+      link:
         default: NOT FOUND
         example: https://www.youtube.com/watch?v=Xsp3_a-PMTw
         type: string
@@ -73,10 +73,10 @@ definitions:
       group:
         example: Muse
         type: string
-      patronymic:
+      link:
         example: https://www.youtube.com/watch?v=Xsp3_a-PMTw
         type: string
-      release_date:
+      releaseDate:
         example: 16.07.2006
         type: string
       song:
@@ -125,9 +125,9 @@ paths:
         in: query
         name: text
         type: string
-      - description: Filter by patronymic
+      - description: Filter by link
         in: query
-        name: patronymic
+        name: link
         type: string
       - description: Limit
         in: query

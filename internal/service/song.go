@@ -27,38 +27,10 @@ func NewSongService(repo *repository.Repository, logger logger.Logger, sideServi
 }
 
 func (s *SongService) CreateSong(input model.SongCreate) (string, error) {
-	req, err := s.client.GetWithQuery(s.sideServiceUrl,
-		"/info",
-		helpers.QueryParam{Key: "group", Value: input.Group},
-		helpers.QueryParam{Key: "song", Value: input.Song})
-	if err != nil {
-		return "", err
-	}
-	defer func(Body io.ReadCloser) {
-		err = Body.Close()
-		if err != nil {
-			s.logger.Info(logger.PG_PREFIX, err.Error())
-		}
-	}(req.Body)
-
-	var arr1 []model.SongRequest
-	reqBody, err := io.ReadAll(req.Body)
-	err = json.Unmarshal(reqBody, &arr1)
-	if len(arr1) == 0 {
-		return s.repo.CreateSong(model.Song{
-			Id:    uuid.New().String(),
-			Group: input.Group,
-			Song:  input.Song,
-		})
-	}
-
 	return s.repo.CreateSong(model.Song{
-		Id:          uuid.New().String(),
-		Group:       input.Group,
-		Song:        input.Song,
-		Text:        arr1[0].Text,
-		Patronymic:  arr1[0].Patronymic,
-		ReleaseDate: arr1[0].ReleaseDate,
+		Id:    uuid.New().String(),
+		Group: input.Group,
+		Song:  input.Song,
 	})
 }
 
@@ -70,11 +42,44 @@ func (s *SongService) DeleteSong(id string) error {
 	return s.repo.Song.DeleteSong(id)
 }
 
-func (s *SongService) GetSongs(group, song, createdAt, text, patronymic string, page, limit int) ([]model.Song, error) {
+func (s *SongService) GetSongs(group, song, createdAt, text, link string, page, limit int) ([]model.Song, error) {
 	offset := (page - 1) * limit
-	return s.repo.Song.GetSongs(group, song, createdAt, text, patronymic, offset, limit)
+	return s.repo.Song.GetSongs(group, song, createdAt, text, link, offset, limit)
 }
 
 func (s *SongService) GetVerse(id string) (string, error) {
 	return s.repo.Song.GetVerse(id)
+}
+
+func (s *SongService) FetchSongData(id string, input model.SongCreate) error {
+	req, err := s.client.GetWithQuery(s.sideServiceUrl,
+		"/info",
+		helpers.QueryParam{Key: "group", Value: input.Group},
+		helpers.QueryParam{Key: "song", Value: input.Song})
+	if err != nil {
+		return err
+	}
+
+	defer req.Body.Close()
+
+	var arr1 []model.SongUpdate
+	reqBody, err := io.ReadAll(req.Body)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(reqBody, &arr1)
+	if err != nil {
+		return err
+	}
+	// Если данные найдены, обновляем песню в базе
+	if len(arr1) > 0 {
+		return s.repo.Song.UpdateSong(id, model.SongUpdate{
+			Text:        arr1[0].Text,
+			Link:        arr1[0].Link,
+			ReleaseDate: arr1[0].ReleaseDate,
+		})
+	}
+
+	return nil
 }

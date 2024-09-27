@@ -56,8 +56,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filter by patronymic",
-                        "name": "patronymic",
+                        "description": "Filter by link",
+                        "name": "link",
                         "in": "query"
                     },
                     {
@@ -361,7 +361,7 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "patronymic": {
+                "link": {
                     "type": "string",
                     "default": "NOT FOUND",
                     "example": "https://www.youtube.com/watch?v=Xsp3_a-PMTw"
@@ -406,11 +406,11 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Muse"
                 },
-                "patronymic": {
+                "link": {
                     "type": "string",
                     "example": "https://www.youtube.com/watch?v=Xsp3_a-PMTw"
                 },
-                "release_date": {
+                "releaseDate": {
                     "type": "string",
                     "example": "16.07.2006"
                 },

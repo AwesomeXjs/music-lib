@@ -10,7 +10,7 @@ type Song interface {
 	CreateSong(input model.Song) (string, error)
 	UpdateSong(id string, input model.SongUpdate) error
 	DeleteSong(id string) error
-	GetSongs(group, song, createdAt, text, patronymic string, offset, limit int) ([]model.Song, error)
+	GetSongs(group, song, createdAt, text, link string, offset, limit int) ([]model.Song, error)
 	GetVerse(id string) (string, error)
 }
 

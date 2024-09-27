@@ -14,7 +14,7 @@ func (app *App) gracefulShutdown(myLogger logger.Logger, database interface{}) e
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	sig := <-quit
 
-	myLogger.Info(logger.APP_PREFIX, "Shutting down server..."+sig.String())
+	myLogger.Debug(logger.APP_PREFIX, "Shutting down server..."+sig.String())
 
 	if err := app.Server.Shutdown(context.Background()); err != nil {
 		return err
@@ -23,6 +23,7 @@ func (app *App) gracefulShutdown(myLogger logger.Logger, database interface{}) e
 	switch v := database.(type) {
 	case *sqlx.DB:
 		if err := v.Close(); err != nil {
+			myLogger.Debug(logger.PG_PREFIX, logger.DISCONNECT_DB+" FAILED TO CLOSE DB")
 			return err
 		}
 	default:

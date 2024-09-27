@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/AwesomeXjs/music-lib/configs"
 	"github.com/AwesomeXjs/music-lib/internal/app"
 	"github.com/AwesomeXjs/music-lib/internal/db"
@@ -27,12 +26,10 @@ func main() {
 
 	// init env config
 	if err := godotenv.Load(); err != nil {
-		fmt.Println(err)
 		myLogger.Fatal("[ ENV ]", "failed to load env variables")
 	}
 
-	config := configs.New()
-
+	config := configs.New(myLogger)
 	postgres, err := db.New(config, myLogger)
 	if err != nil {
 		myLogger.Fatal(logger.PG_PREFIX, logger.PG_CONNECTION_FAILED)

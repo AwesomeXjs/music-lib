@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"os"
 	"sync"
 )
@@ -23,7 +24,7 @@ var (
 )
 
 // create new config
-func New() *Config {
+func New(logger logger.Logger) *Config {
 	once.Do(func() {
 		config = Config{
 			Host:     os.Getenv("DB_HOST"),
@@ -37,5 +38,6 @@ func New() *Config {
 			SideServiceUrl: os.Getenv("SIDE_SERVICE_URL"),
 		}
 	})
+	logger.Info("Config", "Config init")
 	return &config
 }

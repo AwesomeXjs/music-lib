@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/AwesomeXjs/music-lib/internal/helpers"
 	"github.com/AwesomeXjs/music-lib/internal/model"
+	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"github.com/asaskevich/govalidator"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -35,10 +36,30 @@ func (e *Controller) CreateSong(ctx echo.Context) error {
 	}
 
 	songId, err := e.service.Song.CreateSong(input)
+
 	if err != nil {
 		return helpers.ResponseHelper(ctx, http.StatusInternalServerError, helpers.FAILED_TO_CREATE_ELEMENT, err.Error(), ctx.Request().RequestURI, e.logger)
 	}
-	return helpers.ResponseHelper(ctx, http.StatusOK, helpers.SUCCESS, "Song created id: "+songId, ctx.Request().RequestURI, e.logger)
+	response := helpers.ResponseHelper(ctx, http.StatusOK, helpers.SUCCESS, "Song created id: "+songId, ctx.Request().RequestURI, e.logger)
+
+	/*
+			Когда мы получаем ID записи в базе - мы запускаем горутину которая на фоне ищет данные на стороннем сервисе
+			Если данные найдены - она обновляет нужные нам поля в базе
+			Это сделано для того чтобы клиент не ждал ответа от стороннего сервиса а только получал ответ от базы при первой своей записи
+			Так как сторонний сервис может не работать, либо долго отвечать либо записи там не будет найдено,
+		    в таком случае мы запишем в базу "дефолтные" поля (Not found)
+
+			на случай долгого ответа у кастомного клиента установлен timeout в 10 секунд
+	*/
+	go func(songId string, input model.SongCreate) {
+		err = e.service.Song.FetchSongData(songId, input)
+		if err != nil {
+			e.logger.Info("Failed to fetch and update song details:", err.Error())
+		}
+	}(songId, input)
+
+	e.logger.Info(logger.APP_PREFIX, "Song created id: "+songId)
+	return response
 }
 
 // @Summary Update song
@@ -101,7 +122,7 @@ func (e *Controller) DeleteSong(ctx echo.Context) error {
 // @Param song query string false "Filter by song"
 // @Param releaseDate query string false "Filter by created_at"
 // @Param text query string false "Filter by text"
-// @Param patronymic query string false "Filter by patronymic"
+// @Param link query string false "Filter by link"
 // @Param limit query int false "Limit"
 // @Param page query int false "Page"
 // @Success 200 {object} []model.Song
@@ -126,7 +147,7 @@ func (e *Controller) GetSongs(ctx echo.Context) error {
 		strings.Trim(params.Get("song"), " "),
 		strings.Trim(params.Get("releaseDate"), " "),
 		strings.Trim(params.Get("text"), " "),
-		strings.Trim(params.Get("patronymic"), " "),
+		strings.Trim(params.Get("link"), " "),
 		page, limit)
 	if err != nil {
 		return helpers.ResponseHelper(ctx, http.StatusInternalServerError, helpers.FAILED_TO_GET_ELEMENTS, err.Error(), ctx.Request().RequestURI, e.logger)
@@ -159,7 +180,12 @@ func (e *Controller) GetVerse(ctx echo.Context) error {
 	verse := strings.Split(text, "\n\n")
 
 	if numberOfVerse > len(verse) {
-		return helpers.ResponseHelper(ctx, http.StatusUnprocessableEntity, helpers.FAILED_TO_GET_ELEMENTS, "Verse not found", ctx.Request().RequestURI, e.logger)
+		return helpers.ResponseHelper(ctx, http.StatusUnprocessableEntity, helpers.FAILED_TO_GET_ELEMENTS, "This song doesn't have that many verses", ctx.Request().RequestURI, e.logger)
 	}
+	if numberOfVerse < 1 {
+		fullVerse := text
+		return ctx.JSON(http.StatusOK, helpers.Verse{Verse: fullVerse})
+	}
+
 	return ctx.JSON(http.StatusOK, helpers.Verse{Verse: verse[numberOfVerse-1]})
 }

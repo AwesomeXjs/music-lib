@@ -45,7 +45,6 @@ func (c *CustomClient) GetWithQuery(baseUrl, resource string, query ...QueryPara
 		q.Add(query[i].Key, query[i].Value)
 	}
 	request.Header.Add("Content-Type", "application/json")
-
 	request.URL.RawQuery = q.Encode()
 	req, err := c.Client.Get(request.URL.String())
 

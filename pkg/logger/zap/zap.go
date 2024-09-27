@@ -3,6 +3,8 @@ package zaplogger
 import (
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"time"
 )
 
 type ZapLogger struct {
@@ -10,7 +12,9 @@ type ZapLogger struct {
 }
 
 func New() *ZapLogger {
-	zapLogger, _ := zap.NewProduction()
+	config := zap.NewProductionConfig()
+	config.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout(time.RFC3339)
+	zapLogger, _ := config.Build()
 	defer func(zapLogger *zap.Logger) {
 		err := zapLogger.Sync()
 		if err != nil {
@@ -24,6 +28,12 @@ func New() *ZapLogger {
 
 func (l *ZapLogger) Info(prefix, msg string) {
 	l.logger.Info(prefix,
+		zap.String(logger.INFO_PREFIX, msg),
+	)
+}
+
+func (l *ZapLogger) Debug(prefix, msg string) {
+	l.logger.Debug(prefix,
 		zap.String(logger.INFO_PREFIX, msg),
 	)
 }
