@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"github.com/AwesomeXjs/music-lib/configs"
+	"github.com/AwesomeXjs/music-lib/internal/helpers"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
@@ -26,10 +27,10 @@ func New(cfg *configs.Config, myLogger logger.Logger) (*sqlx.DB, error) {
 	}
 	err = db.Ping()
 	if err != nil {
-		myLogger.Fatal(logger.PG_PREFIX, "Failed first ping")
+		myLogger.Fatal(helpers.PG_PREFIX, "Failed first ping")
 		return nil, err
 	}
-	myLogger.Info(logger.PG_PREFIX, logger.PG_CONNECT_SUCCESS)
+	myLogger.Info(helpers.PG_PREFIX, helpers.PG_CONNECT_SUCCESS)
 	return db, nil
 }
 
@@ -41,9 +42,9 @@ func KeepAlivePostgres(database *sqlx.DB, myLogger logger.Logger) {
 		if err != nil {
 			count++
 			if count == MaxTries {
-				myLogger.Fatal(logger.PG_PREFIX, logger.DISCONNECT_DB)
+				myLogger.Fatal(helpers.PG_PREFIX, helpers.DISCONNECT_DB)
 			}
-			myLogger.Info(logger.PG_PREFIX, logger.RECONECT_DB)
+			myLogger.Info(helpers.PG_PREFIX, helpers.RECONECT_DB)
 		}
 	}
 }

@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"github.com/AwesomeXjs/music-lib/internal/helpers"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"github.com/jmoiron/sqlx"
 	"os"
@@ -14,7 +15,7 @@ func (app *App) gracefulShutdown(myLogger logger.Logger, database interface{}) e
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	sig := <-quit
 
-	myLogger.Debug(logger.APP_PREFIX, "Shutting down server..."+sig.String())
+	myLogger.Debug(helpers.APP_PREFIX, "Shutting down server..."+sig.String())
 
 	if err := app.Server.Shutdown(context.Background()); err != nil {
 		return err
@@ -23,11 +24,11 @@ func (app *App) gracefulShutdown(myLogger logger.Logger, database interface{}) e
 	switch v := database.(type) {
 	case *sqlx.DB:
 		if err := v.Close(); err != nil {
-			myLogger.Debug(logger.PG_PREFIX, logger.DISCONNECT_DB+" FAILED TO CLOSE DB")
+			myLogger.Debug(helpers.PG_PREFIX, helpers.DISCONNECT_DB+" FAILED TO CLOSE DB")
 			return err
 		}
 	default:
-		myLogger.Info(logger.PG_PREFIX, logger.DISCONNECT_DB+" FAILED TO CLOSE DB")
+		myLogger.Info(helpers.PG_PREFIX, helpers.DISCONNECT_DB+" FAILED TO CLOSE DB")
 		return nil
 	}
 	return nil

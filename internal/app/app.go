@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/AwesomeXjs/music-lib/configs"
 	"github.com/AwesomeXjs/music-lib/internal/controller"
+	"github.com/AwesomeXjs/music-lib/internal/helpers"
 	"github.com/AwesomeXjs/music-lib/internal/repository"
 	"github.com/AwesomeXjs/music-lib/internal/service"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
@@ -41,13 +42,13 @@ func (app *App) Run(myLogger logger.Logger, database interface{}) error {
 		myLogger.Info("SERVER", "Server running...")
 		err := app.Server.Start(app.config.AppPort)
 		if err != nil {
-			myLogger.Debug(logger.APP_PREFIX, err.Error())
+			myLogger.Debug(helpers.APP_PREFIX, err.Error())
 		}
 	}(myLogger)
 
 	err := app.gracefulShutdown(myLogger, database)
 	if err != nil {
-		myLogger.Debug(logger.APP_PREFIX, err.Error())
+		myLogger.Debug(helpers.APP_PREFIX, err.Error())
 		return err
 	}
 	return nil

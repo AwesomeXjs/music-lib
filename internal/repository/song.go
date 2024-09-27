@@ -43,7 +43,7 @@ func (s *SongRepo) CreateSong(song model.Song) (string, error) {
 	if songId == "" {
 		err = tx.Rollback()
 		if err != nil {
-			s.logger.Info(logger.PG_PREFIX, helpers.FAILED_TO_ROLLBACK)
+			s.logger.Info(helpers.PG_PREFIX, helpers.FAILED_TO_ROLLBACK)
 			return "", err
 		}
 		return "", errors.New(helpers.SONG_ALREADY_EXIST)
@@ -51,7 +51,7 @@ func (s *SongRepo) CreateSong(song model.Song) (string, error) {
 	if err != nil {
 		err = tx.Rollback()
 		if err != nil {
-			s.logger.Info(logger.PG_PREFIX, helpers.FAILED_TO_ROLLBACK)
+			s.logger.Info(helpers.PG_PREFIX, helpers.FAILED_TO_ROLLBACK)
 			return "", err
 		}
 		return "", err
@@ -62,7 +62,7 @@ func (s *SongRepo) CreateSong(song model.Song) (string, error) {
 func (s *SongRepo) UpdateSong(id string, song model.SongUpdate) error {
 	tx, err := s.db.Begin()
 	if err != nil {
-		s.logger.Info(logger.PG_PREFIX, logger.PG_TRANSACTION_FAILED)
+		s.logger.Debug(helpers.PG_PREFIX, helpers.PG_TRANSACTION_FAILED)
 		return err
 	}
 
@@ -90,24 +90,24 @@ func (s *SongRepo) UpdateSong(id string, song model.SongUpdate) error {
 	args = append(args, id)
 	rows, err := tx.Exec(query, args...)
 	if rows == nil {
-		s.logger.Debug(logger.PG_PREFIX, logger.PG_TRANSACTION_FAILED+"Rows affected")
+		s.logger.Debug(helpers.PG_PREFIX, helpers.PG_TRANSACTION_FAILED+"Rows affected")
 		return err
 	}
 	affected, err := rows.RowsAffected()
 	if err != nil {
-		s.logger.Debug(logger.PG_PREFIX, logger.PG_TRANSACTION_FAILED+"Rows affected")
+		s.logger.Debug(helpers.PG_PREFIX, helpers.PG_TRANSACTION_FAILED+"Rows affected")
 		return err
 	}
 	if affected == 0 {
 		err = tx.Rollback()
 		if err != nil {
-			s.logger.Debug(logger.PG_PREFIX, helpers.FAILED_TO_ROLLBACK)
+			s.logger.Debug(helpers.PG_PREFIX, helpers.FAILED_TO_ROLLBACK)
 			return err
 		}
 		return errors.New(helpers.CANNOT_FIND_ELEMENT_BY_ID + " or " + helpers.SONG_ALREADY_EXIST)
 	}
 	if err = tx.Commit(); err != nil {
-		s.logger.Info(logger.PG_PREFIX, logger.PG_COMMIT_FAILED)
+		s.logger.Debug(helpers.PG_PREFIX, helpers.PG_COMMIT_FAILED)
 		return err
 	}
 
@@ -117,17 +117,17 @@ func (s *SongRepo) UpdateSong(id string, song model.SongUpdate) error {
 func (s *SongRepo) DeleteSong(id string) error {
 	tx, err := s.db.Begin()
 	if err != nil {
-		s.logger.Debug(logger.PG_PREFIX, logger.PG_TRANSACTION_FAILED)
+		s.logger.Debug(helpers.PG_PREFIX, helpers.PG_TRANSACTION_FAILED)
 		return err
 	}
 	query := fmt.Sprintf("DELETE FROM %s WHERE id = $1", db.SONGS_TABLE)
 	_, err = tx.Exec(query, id)
 
 	if err != nil {
-		s.logger.Info(logger.PG_PREFIX, logger.PG_TRANSACTION_FAILED)
+		s.logger.Info(helpers.PG_PREFIX, helpers.PG_TRANSACTION_FAILED)
 		err = tx.Rollback()
 		if err != nil {
-			s.logger.Info(logger.PG_PREFIX, helpers.FAILED_TO_ROLLBACK)
+			s.logger.Info(helpers.PG_PREFIX, helpers.FAILED_TO_ROLLBACK)
 			return err
 		}
 	}
@@ -173,7 +173,7 @@ func (s *SongRepo) GetSongs(group, song, createdAt, text, link string, offset, l
 	defer func(rows *sqlx.Rows) {
 		err = rows.Close()
 		if err != nil {
-			s.logger.Info(logger.PG_PREFIX, helpers.FAILED_TO_CLOSE)
+			s.logger.Info(helpers.PG_PREFIX, helpers.FAILED_TO_CLOSE)
 		}
 	}(rows)
 
@@ -203,13 +203,13 @@ func (s *SongRepo) GetVerse(id string) (string, error) {
 		err = res.Scan(&text)
 
 		if err != nil {
-			s.logger.Info(logger.PG_PREFIX, "Failed to get text from database, scan error")
+			s.logger.Info(helpers.PG_PREFIX, "Failed to get text from database, scan error")
 			return "", err
 		}
 	}
 
 	if res == nil {
-		s.logger.Info(logger.PG_PREFIX, "Failed to get text from database, result is nil")
+		s.logger.Info(helpers.PG_PREFIX, "Failed to get text from database, result is nil")
 		return "", err
 	}
 	return text, nil

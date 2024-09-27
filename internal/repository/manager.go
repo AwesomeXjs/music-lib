@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/AwesomeXjs/music-lib/internal/helpers"
 	"github.com/AwesomeXjs/music-lib/internal/model"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"github.com/jmoiron/sqlx"
@@ -27,7 +28,7 @@ func New(db interface{}, myLogger logger.Logger) *Repository {
 		}
 
 	default:
-		myLogger.Fatal(logger.REPO_PREFIX, logger.REPO_CREATE_FAILED)
+		myLogger.Fatal(helpers.REPO_PREFIX, helpers.REPO_CREATE_FAILED)
 		return nil
 	}
 }

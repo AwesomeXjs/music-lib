@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/AwesomeXjs/music-lib/internal/helpers"
 	"github.com/AwesomeXjs/music-lib/internal/model"
-	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"github.com/asaskevich/govalidator"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -58,7 +57,7 @@ func (e *Controller) CreateSong(ctx echo.Context) error {
 		}
 	}(songId, input)
 
-	e.logger.Info(logger.APP_PREFIX, "Song created id: "+songId)
+	e.logger.Info(helpers.APP_PREFIX, "Song created id: "+songId)
 	return response
 }
 
