@@ -10,12 +10,12 @@
 
 <div align="center">
     <img align="center" width="50%" src="./assets/echo-logo.svg">
-    <img align="right" width="40%" src="./assets/big-gopher.png">
 </div>
 
 
 # Music library test task
 # REST API Server
+
 
 
 
@@ -27,7 +27,7 @@ This is Golang REST API server example including the following features:
 *   fastest [Zap](<https://github.com/uber-go/zap>) logger
 *   swagger documentation by [Swaggo](<https://github.com/swaggo/swag>)
 * Implemented classic CRUD with all the requirements, including working with a third-party service when adding music to the library, [Mokky.dev](https://mokky.dev/) for example
-
+  <img align="right" width="40%" src="./assets/big-gopher.png">
 
 
 ##  [How to start project](#start)
