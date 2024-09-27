@@ -30,7 +30,7 @@ This is Golang REST API server example including the following features:
   <img align="right" width="40%" src="./assets/big-gopher.png">
 
 
-##  [How to start project](#start)
+* [How to start project](#start)
 
 
 1. to start correctly you will need [Docker](https://www.docker.com/products/docker-desktop/) and preferably "Make tools"
