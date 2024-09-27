@@ -18,6 +18,4 @@ const (
 
 	JSON_PARSE_ERROR = "JSON_PARSE_ERROR"
 	SUCCESS          = "SUCCESS"
-
-	MOCK_URL = "https://fc4030401c5421b0.mokky.dev"
 )

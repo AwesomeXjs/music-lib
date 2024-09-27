@@ -11,6 +11,7 @@ type Song interface {
 	UpdateSong(id string, input model.SongUpdate) error
 	DeleteSong(id string) error
 	GetSongs(group, song, createdAt, text, patronymic string, offset, limit int) ([]model.Song, error)
+	GetVerse(id string) (string, error)
 }
 
 type Repository struct {
@@ -18,7 +19,7 @@ type Repository struct {
 }
 
 func New(db interface{}, myLogger logger.Logger) *Repository {
-	// проверка типа чтобы мы не зависели от одной базы данных и могли легко переключить репозиторий на MongoDB
+	// проверка типа чтобы мы не зависели от одной базы данных и могли легко переключится на репозиторий с другой бд
 	switch database := db.(type) {
 	case *sqlx.DB:
 		return &Repository{

@@ -34,6 +34,7 @@ func (e *Controller) InitRoutes(server *echo.Echo) {
 			songs.GET("", e.GetSongs)
 			songs.PUT("/:id", e.UpdateSong)
 			songs.DELETE("/:id", e.DeleteSong)
+			songs.GET("/verse/:id", e.GetVerse)
 		}
 	}
 }

@@ -47,6 +47,6 @@ func main() {
 	// start server
 	err = myApp.Run(myLogger, postgres)
 	if err != nil {
-		myLogger.Info(logger.APP_PREFIX, err.Error())
+		myLogger.Fatal(logger.APP_PREFIX, err.Error())
 	}
 }

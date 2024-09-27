@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"github.com/AwesomeXjs/music-lib/internal/helpers"
 	"github.com/AwesomeXjs/music-lib/internal/model"
 	"github.com/AwesomeXjs/music-lib/internal/repository"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
@@ -13,10 +14,10 @@ type SongService struct {
 	repo           *repository.Repository
 	logger         logger.Logger
 	sideServiceUrl string
-	client         CustomClient
+	client         helpers.CustomClient
 }
 
-func NewSongService(repo *repository.Repository, logger logger.Logger, sideServiceUrl string, client CustomClient) *SongService {
+func NewSongService(repo *repository.Repository, logger logger.Logger, sideServiceUrl string, client helpers.CustomClient) *SongService {
 	return &SongService{
 		repo:           repo,
 		logger:         logger,
@@ -28,8 +29,8 @@ func NewSongService(repo *repository.Repository, logger logger.Logger, sideServi
 func (s *SongService) CreateSong(input model.SongCreate) (string, error) {
 	req, err := s.client.GetWithQuery(s.sideServiceUrl,
 		"/info",
-		QueryParam{Key: "group", Value: input.Group},
-		QueryParam{Key: "song", Value: input.Song})
+		helpers.QueryParam{Key: "group", Value: input.Group},
+		helpers.QueryParam{Key: "song", Value: input.Song})
 	if err != nil {
 		return "", err
 	}
@@ -72,4 +73,8 @@ func (s *SongService) DeleteSong(id string) error {
 func (s *SongService) GetSongs(group, song, createdAt, text, patronymic string, page, limit int) ([]model.Song, error) {
 	offset := (page - 1) * limit
 	return s.repo.Song.GetSongs(group, song, createdAt, text, patronymic, offset, limit)
+}
+
+func (s *SongService) GetVerse(id string) (string, error) {
+	return s.repo.Song.GetVerse(id)
 }

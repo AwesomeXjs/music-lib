@@ -155,6 +155,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/songs/verse/{id}": {
+            "get": {
+                "description": "get verse of song",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Song"
+                ],
+                "summary": "Get verse",
+                "operationId": "get-verse",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Song id",
+                        "name": "id",
+                        "in": "path"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Number of verse (номер куплета)",
+                        "name": "num",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Verse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/songs/{id}": {
             "put": {
                 "description": "Update song",
@@ -286,29 +342,43 @@ const docTemplate = `{
                 }
             }
         },
+        "helpers.Verse": {
+            "type": "object",
+            "properties": {
+                "verse": {
+                    "type": "string",
+                    "example": "Ooh baby, don't you know I suffer?\nOoh baby, can you hear me moan?\nYou caught me under false pretenses\nHow long before you let me go?"
+                }
+            }
+        },
         "model.Song": {
             "type": "object",
             "properties": {
                 "group": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Muse"
                 },
                 "id": {
                     "type": "string"
                 },
                 "patronymic": {
                     "type": "string",
-                    "default": "NOT FOUND"
+                    "default": "NOT FOUND",
+                    "example": "https://www.youtube.com/watch?v=Xsp3_a-PMTw"
                 },
                 "releaseDate": {
                     "type": "string",
-                    "default": "NOT FOUND"
+                    "default": "NOT FOUND",
+                    "example": "16.07.2006"
                 },
                 "song": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Supermassive Black Hole"
                 },
                 "text": {
                     "type": "string",
-                    "default": "NOT FOUND"
+                    "default": "NOT FOUND",
+                    "example": "Ooh baby, don't you know I suffer?\nOoh baby, can you hear me moan?\nYou caught me under false pretenses\nHow long before you let me go?\n\nOoh\nYou set my soul alight\nOoh\nYou set my soul alight"
                 }
             }
         },
@@ -350,7 +420,7 @@ const docTemplate = `{
                 },
                 "text": {
                     "type": "string",
-                    "example": "Ooh baby, don't you know I suffer?"
+                    "example": "Ooh baby, don't you know I suffer?\nOoh baby, can you hear me moan?\nYou caught me under false pretenses\nHow long before you let me go?\n\nOoh\nYou set my soul alight\nOoh\nYou set my soul alight"
                 }
             }
         }

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/AwesomeXjs/music-lib/internal/helpers"
 	"github.com/AwesomeXjs/music-lib/internal/model"
 	"github.com/asaskevich/govalidator"
@@ -109,11 +110,7 @@ func (e *Controller) DeleteSong(ctx echo.Context) error {
 // @Failure 500 {object} helpers.Response
 // @Router /v1/songs [get]
 func (e *Controller) GetSongs(ctx echo.Context) error {
-	group := strings.Trim(ctx.QueryParam("group"), " ")
-	song := strings.Trim(ctx.QueryParam("song"), " ")
-	createdAt := strings.Trim(ctx.QueryParam("releaseDate"), " ")
-	text := strings.Trim(ctx.QueryParam("text"), " ")
-	patronymic := strings.Trim(ctx.QueryParam("patronymic"), " ")
+	params := ctx.QueryParams()
 
 	page, err := strconv.Atoi(ctx.QueryParam("page"))
 	if err != nil || page < 1 {
@@ -124,10 +121,45 @@ func (e *Controller) GetSongs(ctx echo.Context) error {
 		limit = 10
 	}
 
-	songs, err := e.service.Song.GetSongs(group, song, createdAt, text, patronymic, page, limit)
+	songs, err := e.service.Song.GetSongs(
+		strings.Trim(params.Get("group"), " "),
+		strings.Trim(params.Get("song"), " "),
+		strings.Trim(params.Get("releaseDate"), " "),
+		strings.Trim(params.Get("text"), " "),
+		strings.Trim(params.Get("patronymic"), " "),
+		page, limit)
 	if err != nil {
 		return helpers.ResponseHelper(ctx, http.StatusInternalServerError, helpers.FAILED_TO_GET_ELEMENTS, err.Error(), ctx.Request().RequestURI, e.logger)
 	}
 
 	return ctx.JSON(http.StatusOK, songs)
+}
+
+// @Summary Get verse
+// @Tags Song
+// @Description get verse of song
+// @ID get-verse
+// @Accept  json
+// @Produce  json
+// @Param id path string false "Song id"
+// @Param num query string false "Number of verse (номер куплета)"
+// @Success 200 {object} helpers.Verse
+// @Failure 400 {object} helpers.Response
+// @Failure 422 {object} helpers.Response
+// @Failure 500 {object} helpers.Response
+// @Router /v1/songs/verse/{id} [get]
+func (e *Controller) GetVerse(ctx echo.Context) error {
+	songId := ctx.Param("id")
+	numberOfVerse, err := strconv.Atoi(ctx.QueryParam("num"))
+	text, err := e.service.Song.GetVerse(songId)
+	if err != nil {
+		return helpers.ResponseHelper(ctx, http.StatusInternalServerError, helpers.FAILED_TO_GET_ELEMENTS, err.Error(), ctx.Request().RequestURI, e.logger)
+	}
+	fmt.Println(text)
+	verse := strings.Split(text, "\n\n")
+
+	if numberOfVerse > len(verse) {
+		return helpers.ResponseHelper(ctx, http.StatusUnprocessableEntity, helpers.FAILED_TO_GET_ELEMENTS, "Verse not found", ctx.Request().RequestURI, e.logger)
+	}
+	return ctx.JSON(http.StatusOK, helpers.Verse{Verse: verse[numberOfVerse-1]})
 }

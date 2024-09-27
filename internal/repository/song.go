@@ -29,8 +29,6 @@ func (s *SongRepo) CreateSong(song model.Song) (string, error) {
 		song.Patronymic = "NOT FOUND"
 		song.ReleaseDate = "NOT FOUND"
 	}
-
-	fmt.Printf("%+v", song)
 	tx, err := s.db.Begin()
 	if err != nil {
 		return "", err
@@ -58,7 +56,6 @@ func (s *SongRepo) CreateSong(song model.Song) (string, error) {
 		}
 		return "", err
 	}
-	fmt.Println("SONG ID", songId)
 	return songId, tx.Commit()
 }
 
@@ -179,4 +176,24 @@ func (s *SongRepo) GetSongs(group, song, createdAt, text, patronymic string, off
 		return nil, errors.New("Songs not found")
 	}
 	return songs, nil
+}
+
+func (s *SongRepo) GetVerse(id string) (string, error) {
+	query := fmt.Sprintf("SELECT text FROM %s WHERE id = $1", db.SONGS_TABLE)
+
+	var text string
+	res, err := s.db.Query(query, id)
+	for res.Next() {
+		err = res.Scan(&text)
+		if err != nil {
+			s.logger.Info(logger.PG_PREFIX, "Failed to get text from database, scan error")
+			return "", err
+		}
+	}
+
+	if res == nil {
+		s.logger.Info(logger.PG_PREFIX, "Failed to get text from database, result is nil")
+		return "", err
+	}
+	return text, nil
 }

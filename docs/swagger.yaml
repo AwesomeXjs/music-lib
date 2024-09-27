@@ -14,22 +14,46 @@ definitions:
         description: Not Found
         type: string
     type: object
+  helpers.Verse:
+    properties:
+      verse:
+        example: |-
+          Ooh baby, don't you know I suffer?
+          Ooh baby, can you hear me moan?
+          You caught me under false pretenses
+          How long before you let me go?
+        type: string
+    type: object
   model.Song:
     properties:
       group:
+        example: Muse
         type: string
       id:
         type: string
       patronymic:
         default: NOT FOUND
+        example: https://www.youtube.com/watch?v=Xsp3_a-PMTw
         type: string
       releaseDate:
         default: NOT FOUND
+        example: 16.07.2006
         type: string
       song:
+        example: Supermassive Black Hole
         type: string
       text:
         default: NOT FOUND
+        example: |-
+          Ooh baby, don't you know I suffer?
+          Ooh baby, can you hear me moan?
+          You caught me under false pretenses
+          How long before you let me go?
+
+          Ooh
+          You set my soul alight
+          Ooh
+          You set my soul alight
         type: string
     type: object
   model.SongCreate:
@@ -59,7 +83,16 @@ definitions:
         example: Supermassive Black Hole
         type: string
       text:
-        example: Ooh baby, don't you know I suffer?
+        example: |-
+          Ooh baby, don't you know I suffer?
+          Ooh baby, can you hear me moan?
+          You caught me under false pretenses
+          How long before you let me go?
+
+          Ooh
+          You set my soul alight
+          Ooh
+          You set my soul alight
         type: string
     type: object
 host: localhost:8080
@@ -233,6 +266,43 @@ paths:
           schema:
             $ref: '#/definitions/helpers.Response'
       summary: Update song
+      tags:
+      - Song
+  /v1/songs/verse/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get verse of song
+      operationId: get-verse
+      parameters:
+      - description: Song id
+        in: path
+        name: id
+        type: string
+      - description: Number of verse (номер куплета)
+        in: query
+        name: num
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helpers.Verse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      summary: Get verse
       tags:
       - Song
 swagger: "2.0"
