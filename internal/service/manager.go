@@ -14,6 +14,7 @@ type Song interface {
 	GetSongs(group, song, createdAt, text, link string, page, limit int) ([]model.Song, error)
 	GetVerse(id string) (string, error)
 	FetchSongData(id string, input model.SongCreate) error
+	GetAll() ([]helpers.MockSongs, error)
 }
 
 type Service struct {

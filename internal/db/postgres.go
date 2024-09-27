@@ -22,6 +22,7 @@ func New(cfg *configs.Config, myLogger logger.Logger) (*sqlx.DB, error) {
 		cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName, cfg.SSLMode)
 
 	db, err := sqlx.Open("postgres", databaseUrl)
+	fmt.Println(databaseUrl)
 	if err != nil {
 		return nil, err
 	}

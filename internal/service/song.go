@@ -83,3 +83,20 @@ func (s *SongService) FetchSongData(id string, input model.SongCreate) error {
 
 	return nil
 }
+
+func (s *SongService) GetAll() ([]helpers.MockSongs, error) {
+	req, err := s.client.Client.Get(s.sideServiceUrl + "/info")
+	defer req.Body.Close()
+	var data []helpers.MockSongs
+	reqBody, err := io.ReadAll(req.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(reqBody, &data)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}

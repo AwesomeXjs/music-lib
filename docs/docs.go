@@ -15,6 +15,48 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/all": {
+            "get": {
+                "description": "Посмотреть все доступные песни с данными",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MockServer"
+                ],
+                "summary": "Get All from mockserver",
+                "operationId": "get-all",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Song"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/songs": {
             "get": {
                 "description": "get songs from library",
@@ -326,18 +368,15 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "detail": {
-                    "description": "Entity post with id 12345 not found",
                     "type": "string"
                 },
                 "request": {
-                    "description": "PUT /posts/12345",
                     "type": "string"
                 },
                 "time": {
                     "type": "string"
                 },
                 "title": {
-                    "description": "Not Found",
                     "type": "string"
                 }
             }
