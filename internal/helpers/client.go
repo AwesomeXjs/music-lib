@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"github.com/AwesomeXjs/music-lib/configs"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"net"
 	"net/http"
@@ -28,8 +29,9 @@ func NewClient() *http.Client {
 }
 
 type CustomClient struct {
-	Client *http.Client
-	Logger logger.Logger
+	Client         *http.Client
+	Logger         logger.Logger
+	SideServiceUrl string
 }
 
 type QueryParam struct {
@@ -37,8 +39,8 @@ type QueryParam struct {
 	Value string
 }
 
-func (c *CustomClient) GetWithQuery(baseUrl, resource string, query ...QueryParam) (*http.Response, error) {
-	request, err := http.NewRequest(http.MethodGet, baseUrl+resource, nil)
+func (c *CustomClient) GetWithQuery(resource string, query ...QueryParam) (*http.Response, error) {
+	request, err := http.NewRequest(http.MethodGet, c.SideServiceUrl+resource, nil)
 
 	q := request.URL.Query()
 	for i := range query {
@@ -47,10 +49,19 @@ func (c *CustomClient) GetWithQuery(baseUrl, resource string, query ...QueryPara
 	request.Header.Add("Content-Type", "application/json")
 	request.URL.RawQuery = q.Encode()
 	req, err := c.Client.Get(request.URL.String())
- 
+
 	if err != nil {
 		c.Logger.Info(RESPONSE_PREFIX, err.Error())
 		return nil, err
 	}
 	return req, nil
+}
+
+func NewCustomClient(logger logger.Logger) *CustomClient {
+	config := configs.New(logger)
+	return &CustomClient{
+		Client:         NewClient(),
+		Logger:         logger,
+		SideServiceUrl: config.SideServiceUrl,
+	}
 }

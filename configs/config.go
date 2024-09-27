@@ -23,7 +23,6 @@ var (
 	once   sync.Once
 )
 
-// create new config
 func New(logger logger.Logger) *Config {
 	once.Do(func() {
 		config = Config{

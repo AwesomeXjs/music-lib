@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/AwesomeXjs/music-lib/internal/helpers"
 	"github.com/AwesomeXjs/music-lib/internal/model"
 	"github.com/asaskevich/govalidator"
@@ -25,17 +24,16 @@ import (
 // @Router /v1/songs [post]
 func (e *Controller) CreateSong(ctx echo.Context) error {
 	var input model.SongCreate
-
 	if err := ctx.Bind(&input); err != nil {
 		return helpers.ResponseHelper(ctx, http.StatusBadRequest, helpers.JSON_PARSE_ERROR, err.Error(), e.logger)
 	}
+
 	_, err := govalidator.ValidateStruct(input)
 	if err != nil {
 		return helpers.ResponseHelper(ctx, http.StatusUnprocessableEntity, helpers.JSON_PARSE_ERROR, err.Error(), e.logger)
 	}
 
 	songId, err := e.service.Song.CreateSong(input)
-
 	if err != nil {
 		return helpers.ResponseHelper(ctx, http.StatusInternalServerError, helpers.FAILED_TO_CREATE_ELEMENT, err.Error(), e.logger)
 	}
@@ -45,11 +43,12 @@ func (e *Controller) CreateSong(ctx echo.Context) error {
 			Когда мы получаем ID записи в базе - мы запускаем горутину которая на фоне ищет данные на стороннем сервисе
 			Если данные найдены - она обновляет нужные нам поля в базе
 			Это сделано для того чтобы клиент не ждал ответа от стороннего сервиса а только получал ответ от базы при первой своей записи
-			Так как сторонний сервис может не работать, либо долго отвечать либо записи там не будет найдено,
+			Так как сторонний сервис может не работать, либо долго отвечать либо там не будет найдено ничего,
 		    в таком случае мы запишем в базу "дефолтные" поля (Not found)
 
 			на случай долгого ответа у кастомного клиента установлен timeout в 10 секунд
 	*/
+
 	go func(songId string, input model.SongCreate) {
 		err = e.service.Song.FetchSongData(songId, input)
 		if err != nil {
@@ -76,18 +75,20 @@ func (e *Controller) CreateSong(ctx echo.Context) error {
 // @Router /v1/songs/{id} [put]
 func (e *Controller) UpdateSong(ctx echo.Context) error {
 	songId := ctx.Param("id")
-
 	var input model.SongUpdate
 	if err := ctx.Bind(&input); err != nil {
 		return helpers.ResponseHelper(ctx, http.StatusBadRequest, helpers.JSON_PARSE_ERROR, err.Error(), e.logger)
 	}
+
 	_, err := govalidator.ValidateStruct(input)
 	if err != nil {
 		return helpers.ResponseHelper(ctx, http.StatusUnprocessableEntity, helpers.JSON_PARSE_ERROR, err.Error(), e.logger)
 	}
+
 	if err = e.service.Song.UpdateSong(songId, input); err != nil {
 		return helpers.ResponseHelper(ctx, http.StatusInternalServerError, helpers.FAILED_TO_UPDATE_ELEMENT, err.Error(), e.logger)
 	}
+
 	return helpers.ResponseHelper(ctx, http.StatusOK, helpers.SUCCESS, "Song updated", e.logger)
 }
 
@@ -105,6 +106,7 @@ func (e *Controller) UpdateSong(ctx echo.Context) error {
 // @Router /v1/songs/{id} [delete]
 func (e *Controller) DeleteSong(ctx echo.Context) error {
 	songId := ctx.Param("id")
+
 	if err := e.service.Song.DeleteSong(songId); err != nil {
 		return helpers.ResponseHelper(ctx, http.StatusInternalServerError, helpers.FAILED_TO_DELETE_ELEMENT, err.Error(), e.logger)
 	}
@@ -131,7 +133,6 @@ func (e *Controller) DeleteSong(ctx echo.Context) error {
 // @Router /v1/songs [get]
 func (e *Controller) GetSongs(ctx echo.Context) error {
 	params := ctx.QueryParams()
-
 	page, err := strconv.Atoi(ctx.QueryParam("page"))
 	if err != nil || page < 1 {
 		page = 1
@@ -171,13 +172,13 @@ func (e *Controller) GetSongs(ctx echo.Context) error {
 func (e *Controller) GetVerse(ctx echo.Context) error {
 	songId := ctx.Param("id")
 	numberOfVerse, err := strconv.Atoi(ctx.QueryParam("num"))
+
 	text, err := e.service.Song.GetVerse(songId)
 	if err != nil {
 		return helpers.ResponseHelper(ctx, http.StatusInternalServerError, helpers.FAILED_TO_GET_ELEMENTS, err.Error(), e.logger)
 	}
-	fmt.Println(text)
-	verse := strings.Split(text, "\n\n")
 
+	verse := strings.Split(text, "\n\n")
 	if numberOfVerse > len(verse) {
 		return helpers.ResponseHelper(ctx, http.StatusUnprocessableEntity, helpers.FAILED_TO_GET_ELEMENTS, "This song doesn't have that many verses", e.logger)
 	}
@@ -185,11 +186,11 @@ func (e *Controller) GetVerse(ctx echo.Context) error {
 		fullVerse := text
 		return ctx.JSON(http.StatusOK, helpers.Verse{Verse: fullVerse})
 	}
-
+	
 	return ctx.JSON(http.StatusOK, helpers.Verse{Verse: verse[numberOfVerse-1]})
 }
 
-// @Summary Get All from mockserver
+// @Summary Get All from mock service
 // @Tags MockServer
 // @Description Посмотреть все доступные песни с данными
 // @ID get-all
@@ -199,8 +200,8 @@ func (e *Controller) GetVerse(ctx echo.Context) error {
 // @Failure 422 {object} helpers.Response
 // @Failure 500 {object} helpers.Response
 // @Router /v1/all [get]
-func (e *Controller) GetAll(ctx echo.Context) error {
-	songs, err := e.service.Song.GetAll()
+func (e *Controller) GetAllFromMockService(ctx echo.Context) error {
+	songs, err := e.service.Song.GetAllFromMockService()
 	if err != nil {
 		return helpers.ResponseHelper(ctx, http.StatusInternalServerError, helpers.FAILED_TO_GET_ELEMENTS, err.Error(), e.logger)
 	}

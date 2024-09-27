@@ -14,15 +14,14 @@ type SongService struct {
 	repo           *repository.Repository
 	logger         logger.Logger
 	sideServiceUrl string
-	client         helpers.CustomClient
+	client         *helpers.CustomClient
 }
 
-func NewSongService(repo *repository.Repository, logger logger.Logger, sideServiceUrl string, client helpers.CustomClient) *SongService {
+func NewSongService(repo *repository.Repository, logger logger.Logger, client *helpers.CustomClient) *SongService {
 	return &SongService{
-		repo:           repo,
-		logger:         logger,
-		sideServiceUrl: sideServiceUrl,
-		client:         client,
+		repo:   repo,
+		logger: logger,
+		client: client,
 	}
 }
 
@@ -52,7 +51,7 @@ func (s *SongService) GetVerse(id string) (string, error) {
 }
 
 func (s *SongService) FetchSongData(id string, input model.SongCreate) error {
-	req, err := s.client.GetWithQuery(s.sideServiceUrl,
+	req, err := s.client.GetWithQuery(
 		"/info",
 		helpers.QueryParam{Key: "group", Value: input.Group},
 		helpers.QueryParam{Key: "song", Value: input.Song})
@@ -84,8 +83,8 @@ func (s *SongService) FetchSongData(id string, input model.SongCreate) error {
 	return nil
 }
 
-func (s *SongService) GetAll() ([]helpers.MockSongs, error) {
-	req, err := s.client.Client.Get(s.sideServiceUrl + "/info")
+func (s *SongService) GetAllFromMockService() ([]helpers.MockSongs, error) {
+	req, err := s.client.Client.Get(s.client.SideServiceUrl + "/info")
 	defer req.Body.Close()
 	var data []helpers.MockSongs
 	reqBody, err := io.ReadAll(req.Body)

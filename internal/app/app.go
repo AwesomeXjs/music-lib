@@ -7,6 +7,7 @@ import (
 	"github.com/AwesomeXjs/music-lib/internal/repository"
 	"github.com/AwesomeXjs/music-lib/internal/service"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
+	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -20,11 +21,12 @@ type App struct {
 	config *configs.Config
 }
 
-func New(database interface{}, myLogger logger.Logger, config *configs.Config) *App {
+func New(database *sqlx.DB, myLogger logger.Logger, config *configs.Config) *App {
+	// Init app
 	app := &App{}
 	app.config = config
 	app.repository = repository.New(database, myLogger)
-	app.service = service.New(app.repository, myLogger, app.config.SideServiceUrl)
+	app.service = service.New(app.repository, myLogger)
 	app.controller = controller.New(app.service, myLogger)
 	app.Server = echo.New()
 
@@ -42,7 +44,7 @@ func New(database interface{}, myLogger logger.Logger, config *configs.Config) *
 	return app
 }
 
-func (app *App) Run(myLogger logger.Logger, database interface{}) error {
+func (app *App) Run(myLogger logger.Logger, database *sqlx.DB) error {
 	go func(myLogger logger.Logger) {
 		myLogger.Info("SERVER", "Server running...")
 		err := app.Server.Start(app.config.AppPort)
