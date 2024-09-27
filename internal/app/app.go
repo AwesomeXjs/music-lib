@@ -31,7 +31,7 @@ func New(database interface{}, myLogger logger.Logger, config *configs.Config) *
 	// MW
 	app.Server.Use(middleware.Recover())
 	app.Server.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:8080"},
+		AllowOrigins: []string{"http://localhost:8080", "http://localhost:9999"},
 		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
