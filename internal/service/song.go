@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/AwesomeXjs/music-lib/internal/helpers"
 	"github.com/AwesomeXjs/music-lib/internal/model"
 	"github.com/AwesomeXjs/music-lib/internal/repository"
@@ -56,7 +57,8 @@ func (s *SongService) FetchSongData(id string, input model.SongCreate) error {
 		helpers.QueryParam{Key: "group", Value: input.Group},
 		helpers.QueryParam{Key: "song", Value: input.Song})
 	if err != nil {
-		return err
+		s.logger.Debug(helpers.PG_PREFIX, helpers.REQUEST_ERROR)
+		return fmt.Errorf("failed to get song data: %v", err)
 	}
 
 	defer req.Body.Close()
@@ -64,12 +66,14 @@ func (s *SongService) FetchSongData(id string, input model.SongCreate) error {
 	var arr1 []model.SongUpdate
 	reqBody, err := io.ReadAll(req.Body)
 	if err != nil {
-		return err
+		s.logger.Debug(helpers.PG_PREFIX, helpers.READ_BODY_ERROR)
+		return fmt.Errorf("failed to read response body: %v", err)
 	}
 
 	err = json.Unmarshal(reqBody, &arr1)
 	if err != nil {
-		return err
+		s.logger.Debug(helpers.PG_PREFIX, helpers.UNMARSHAL_ERROR)
+		return fmt.Errorf("failed to unmarshal response body: %v", err)
 	}
 	// Если данные найдены, обновляем песню в базе
 	if len(arr1) > 0 {
@@ -89,12 +93,14 @@ func (s *SongService) GetAllFromMockService() ([]helpers.MockSongs, error) {
 	var data []helpers.MockSongs
 	reqBody, err := io.ReadAll(req.Body)
 	if err != nil {
-		return nil, err
+		s.logger.Debug(helpers.PG_PREFIX, helpers.READ_BODY_ERROR)
+		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
 	err = json.Unmarshal(reqBody, &data)
 
 	if err != nil {
-		return nil, err
+		s.logger.Debug(helpers.PG_PREFIX, helpers.UNMARSHAL_ERROR)
+		return nil, fmt.Errorf("failed to unmarshal response body: %v", err)
 	}
 
 	return data, nil

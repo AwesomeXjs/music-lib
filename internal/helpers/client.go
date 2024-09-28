@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"github.com/AwesomeXjs/music-lib/configs"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"net"
@@ -52,7 +53,7 @@ func (c *CustomClient) GetWithQuery(resource string, query ...QueryParam) (*http
 
 	if err != nil {
 		c.Logger.Info(RESPONSE_PREFIX, err.Error())
-		return nil, err
+		return nil, fmt.Errorf("%v", err)
 	}
 	return req, nil
 }

@@ -2,6 +2,7 @@ package zaplogger
 
 import (
 	"github.com/AwesomeXjs/music-lib/internal/helpers"
+	"github.com/labstack/gommon/log"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"time"
@@ -18,7 +19,8 @@ func New() *ZapLogger {
 	defer func(zapLogger *zap.Logger) {
 		err := zapLogger.Sync()
 		if err != nil {
-
+			log.Debug("[ ZAP ]", err.Error())
+			return
 		}
 	}(zapLogger)
 	return &ZapLogger{

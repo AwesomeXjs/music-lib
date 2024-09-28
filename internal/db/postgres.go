@@ -27,14 +27,14 @@ func New(cfg *configs.Config, myLogger logger.Logger) (*sqlx.DB, error) {
 	db, err := sqlx.Open("postgres", databaseUrl)
 	fmt.Println(databaseUrl)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(" %v", err)
 	}
 
 	// First ping
 	err = db.Ping()
 	if err != nil {
 		myLogger.Fatal(helpers.PG_PREFIX, "Failed first ping")
-		return nil, err
+		return nil, fmt.Errorf(" %v", err)
 	}
 	myLogger.Info(helpers.PG_PREFIX, helpers.PG_CONNECT_SUCCESS)
 	return db, nil
@@ -69,7 +69,7 @@ func MigrationUp(config *configs.Config, myLogger logger.Logger) error {
 	err = m.Up()
 	if err != nil {
 		myLogger.Fatal(helpers.PG_PREFIX, helpers.PG_MIGRATION_FAILED)
-		return err
+		return fmt.Errorf(" %v", err)
 	}
 
 	return nil

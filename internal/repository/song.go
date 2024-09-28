@@ -44,12 +44,10 @@ func (s *SongRepo) CreateSong(song model.Song) (string, error) {
 		return err
 	})
 
-	if songId == "" {
+	if songId == "" || err != nil {
 		return "", errors.New("Failed to create song or song already exists")
 	}
-	if err != nil {
-		return "", err
-	}
+
 	return songId, nil
 }
 
@@ -79,13 +77,13 @@ func (s *SongRepo) UpdateSong(id string, song model.SongUpdate) error {
 		rows, err := tx.Exec(query, args...)
 		if err != nil {
 			s.logger.Debug(helpers.PG_PREFIX, helpers.PG_TRANSACTION_FAILED+"Exec failed")
-			return err
+			return fmt.Errorf("failed to update song: %w", err)
 		}
 
 		affected, err := rows.RowsAffected()
 		if err != nil {
 			s.logger.Debug(helpers.PG_PREFIX, helpers.PG_TRANSACTION_FAILED+"Rows affected")
-			return err
+			return fmt.Errorf("failed to get rows affected: %w", err)
 		}
 		if affected == 0 {
 			s.logger.Debug(helpers.PG_PREFIX, helpers.NO_ROWS_AFFECTED)
@@ -102,7 +100,7 @@ func (s *SongRepo) DeleteSong(id string) error {
 		_, err := tx.Exec(query, id)
 		if err != nil {
 			s.logger.Debug(helpers.PG_PREFIX, helpers.PG_TRANSACTION_FAILED)
-			return err
+			return fmt.Errorf("failed to delete song: %w", err)
 		}
 		return nil
 	})
@@ -137,12 +135,13 @@ func (s *SongRepo) GetSongs(group, song, createdAt, text, link string, offset, l
 
 	rows, err := s.db.Queryx(query, args...)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("query error: %v", err)
 	}
 	defer func(rows *sqlx.Rows) {
 		err = rows.Close()
 		if err != nil {
 			s.logger.Info(helpers.PG_PREFIX, helpers.FAILED_TO_CLOSE)
+			return
 		}
 	}(rows)
 
@@ -151,7 +150,7 @@ func (s *SongRepo) GetSongs(group, song, createdAt, text, link string, offset, l
 		var song model.Song
 		err = rows.StructScan(&song)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("scan error: %v", err)
 		}
 		songs = append(songs, song)
 	}
@@ -172,13 +171,13 @@ func (s *SongRepo) GetVerse(id string) (string, error) {
 
 		if err != nil {
 			s.logger.Info(helpers.PG_PREFIX, "Failed to get text from database, scan error")
-			return "", err
+			return "", fmt.Errorf("scan error: %v", err)
 		}
 	}
 
 	if res == nil {
 		s.logger.Info(helpers.PG_PREFIX, "Failed to get text from database, result is nil")
-		return "", err
+		return "", fmt.Errorf("result is nil")
 	}
 	return text, nil
 }
