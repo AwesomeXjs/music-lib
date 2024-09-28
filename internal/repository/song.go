@@ -97,24 +97,15 @@ func (s *SongRepo) UpdateSong(id string, song model.SongUpdate) error {
 }
 
 func (s *SongRepo) DeleteSong(id string) error {
-	tx, err := s.db.Begin()
-	if err != nil {
-		s.logger.Debug(helpers.PG_PREFIX, helpers.PG_TRANSACTION_FAILED)
-		return err
-	}
-	query := fmt.Sprintf("DELETE FROM %s WHERE id = $1", db.SONGS_TABLE)
-	_, err = tx.Exec(query, id)
-
-	if err != nil {
-		s.logger.Info(helpers.PG_PREFIX, helpers.PG_TRANSACTION_FAILED)
-		return s.handleRollback(tx)
-	}
-
-	if err = tx.Commit(); err != nil {
-		s.logger.Debug(helpers.PG_PREFIX, helpers.PG_COMMIT_FAILED)
-		return err
-	}
-	return nil
+	return s.executeInTransaction(func(tx *sql.Tx) error {
+		query := fmt.Sprintf("DELETE FROM %s WHERE id = $1", db.SONGS_TABLE)
+		_, err := tx.Exec(query, id)
+		if err != nil {
+			s.logger.Debug(helpers.PG_PREFIX, helpers.PG_TRANSACTION_FAILED)
+			return err
+		}
+		return nil
+	})
 }
 
 func (s *SongRepo) GetSongs(group, song, createdAt, text, link string, offset, limit int) ([]model.Song, error) {
