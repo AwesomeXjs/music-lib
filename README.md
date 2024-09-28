@@ -39,7 +39,7 @@ $ docker compose -f docker-compose.yml up -d
 ```
 2. After assembly, the server will start and Swagger documentation will become available to you at this path:
 ```sh
-$ http://localhost:9999/swagger/
+http://localhost:9999/swagger/
 ```
 
 <img align="right" width="100%" src="./assets/swagger.jpg">
