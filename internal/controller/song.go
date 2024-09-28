@@ -37,7 +37,7 @@ func (e *Controller) CreateSong(ctx echo.Context) error {
 	if err != nil {
 		return helpers.ResponseHelper(ctx, http.StatusInternalServerError, helpers.FAILED_TO_CREATE_ELEMENT, err.Error(), e.logger)
 	}
-	response := helpers.ResponseHelper(ctx, http.StatusOK, helpers.SUCCESS, "Song created id: "+songId, e.logger)
+	err = helpers.ResponseHelper(ctx, http.StatusOK, helpers.SUCCESS, "Song created id: "+songId, e.logger)
 
 	/*
 			Когда мы получаем ID записи в базе - мы запускаем горутину которая на фоне ищет данные на стороннем сервисе
@@ -57,7 +57,7 @@ func (e *Controller) CreateSong(ctx echo.Context) error {
 	}(songId, input)
 
 	e.logger.Info(helpers.APP_PREFIX, "Song created id: "+songId)
-	return response
+	return err
 }
 
 // @Summary Update song
@@ -186,7 +186,7 @@ func (e *Controller) GetVerse(ctx echo.Context) error {
 		fullVerse := text
 		return ctx.JSON(http.StatusOK, helpers.Verse{Verse: fullVerse})
 	}
-	
+
 	return ctx.JSON(http.StatusOK, helpers.Verse{Verse: verse[numberOfVerse-1]})
 }
 

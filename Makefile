@@ -14,3 +14,4 @@ migrate-init:
 make up:
 	docker compose -f docker-compose.yml up -d
 
+# go install github.com/vektra/mockery/v2@v2.46.1 - mocks

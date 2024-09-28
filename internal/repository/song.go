@@ -36,18 +36,20 @@ func (s *SongRepo) CreateSong(song model.Song) (string, error) {
 	err := s.executeInTransaction(func(tx *sql.Tx) error {
 		query := fmt.Sprintf("INSERT INTO %s (id, group_name, song, text, link, release_date) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", db.SONGS_TABLE)
 		result := tx.QueryRow(query, song.Id, song.Group, song.Song, song.Text, song.Link, song.ReleaseDate)
-
 		err := result.Scan(&songId)
-		if err != nil || songId == "" {
+		if err != nil {
 			s.logger.Debug(helpers.PG_PREFIX, err.Error())
 			return err
 		}
-		return nil
+		return err
 	})
+
+	if songId == "" {
+		return "", errors.New("Failed to create song or song already exists")
+	}
 	if err != nil {
 		return "", err
 	}
-
 	return songId, nil
 }
 
