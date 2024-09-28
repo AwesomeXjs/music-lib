@@ -10,7 +10,7 @@
 
 <div align="center">
     <img align="left" width="23%" src="./assets/big-gopher.png">
-    <img align="center" width="70%" src="./assets/echo-logo.svg">
+    <img align="center" width="65%" src="./assets/echo-logo.svg">
 </div>
 
 
