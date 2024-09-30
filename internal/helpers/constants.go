@@ -1,71 +1,30 @@
 package helpers
 
 const (
-	// FailedToCreateElement contains error message for failed to create element
-	FailedToCreateElement = "FAILED_TO_CREATE_ELEMENT"
+	FailedToCreateElement = "FAILED_TO_CREATE_ELEMENT" // FailedToCreateElement contains error message for failed to create element
+	FailedToDeleteElement = "FAILED_TO_DELETE_ELEMENT" // FailedToDeleteElement contains error message for failed to delete element
+	FailedToGetElements   = "FAILED_TO_GET_ELEMENTS"   // FailedToGetElements contains error message for failed to get elements
+	JSONParseError        = "JSON_PARSE_ERROR"         // JSONParseError contains error message for failed to parse json
+	DefaultValueForFields = "NOT FOUND"                // DefaultValueForFields contains default value for fields
 
-	// FailedToDeleteElement contains error message for failed to delete element
-	FailedToDeleteElement = "FAILED_TO_DELETE_ELEMENT"
+	AppPrefix      = " [ APP ] "      // AppPrefix contains app prefix
+	ResponsePrefix = " [ RESPONSE ] " // ResponsePrefix contains response prefix
+	InfoPrefix     = " INFO "         // InfoPrefix contains info prefix
+	Success        = "SUCCESS"        // Success contains success message
+	RequestError   = "REQUEST_ERROR"  // RequestError contains error message for failed to error
+	StatusPrefix   = " STATUS "       // StatusPrefix contains status prefix
 
-	// FailedToGetElements contains error message for failed to get elements
-	FailedToGetElements = "FAILED_TO_GET_ELEMENTS"
+	UnmarshalError = "UNMARSHAL_ERROR" // UnmarshalError contains error message for unmarshal error
+	ReadBodyError  = "READ_BODY_ERROR" // ReadBodyError contains error message for read body error
 
-	// FailedToRollback contains error message for failed to rollback
-	FailedToRollback = "FAILED TO ROLLBACK"
-
-	// FailedToClose contains error message for failed to close
-	FailedToClose = "FAILED TO CLOSE"
-
-	// RequestError contains error message for failed to error
-	RequestError = "REQUEST_ERROR"
-
-	// JSONParseError contains error message for failed to parse json
-	JSONParseError = "JSON_PARSE_ERROR"
-
-	// Success contains success message
-	Success = "SUCCESS"
-
-	// DefaultValueForFields contains default value for fields
-	DefaultValueForFields = "NOT FOUND"
-
-	// AppPrefix contains app prefix
-	AppPrefix = " [ APP ] "
-
-	// InfoPrefix contains info prefix
-	InfoPrefix = " INFO "
-
-	// StatusPrefix contains status prefix
-	StatusPrefix = " STATUS "
-
-	// ResponsePrefix contains response prefix
-	ResponsePrefix = " [ RESPONSE ] "
-
-	// UnmarshalError contains error message for unmarshal error
-	UnmarshalError = "UNMARSHAL_ERROR"
-
-	// ReadBodyError contains error message for read body error
-	ReadBodyError = "READ_BODY_ERROR"
-
-	// ReconnectDB contains reconnect db message
-	ReconnectDB = "RECONNECTING TO DATABASE..."
-	// DisconnectDB contains disconnect db message
-	DisconnectDB = "DISCONNECTED FROM DATABASE"
-
-	// PgPrefix contains database prefix for logs
-	PgPrefix = " [ POSTGRES ] "
-
-	// PgConnectFailed contains error message for failed to connect to database
-	PgConnectFailed = "FAILED TO CONNECT TO DATABASE"
-
-	// PgConnectSuccess contains success message for successfully connected to database
-	PgConnectSuccess = "SUCCESSFULLY CONNECTED TO POSTGRES"
-
-	// PgTransactionFailed contains error message for failed to fetch transaction
-	PgTransactionFailed = "FAILED TO FETCH TRANSACTION"
-
-	// PgMigrateFailed contains error message for failed to migrate database
-	PgMigrateFailed = "FAILED TO MIGRATE DATABASE"
-
-	// NoRowsAffected contains error message for no rows affected
-	NoRowsAffected = "NO ROWS AFFECTED"
+	ReconnectDB         = "RECONNECTING TO DATABASE..."        // ReconnectDB contains reconnect db message
+	DisconnectDB        = "DISCONNECTED FROM DATABASE"         // DisconnectDB contains disconnect db message
+	PgPrefix            = " [ POSTGRES ] "                     // PgPrefix contains database prefix for logs
+	PgConnectFailed     = "FAILED TO CONNECT TO DATABASE"      // PgConnectFailed contains error message for failed to connect to database
+	PgConnectSuccess    = "SUCCESSFULLY CONNECTED TO POSTGRES" // PgConnectSuccess contains success message for successfully connected to database
+	PgTransactionFailed = "FAILED TO FETCH TRANSACTION"        // PgTransactionFailed contains error message for failed to fetch transaction
+	PgMigrateFailed     = "FAILED TO MIGRATE DATABASE"         // PgMigrateFailed contains error message for failed to migrate database
+	NoRowsAffected      = "NO ROWS AFFECTED"                   // NoRowsAffected contains error message for no rows affected
+	FailedToRollback    = "FAILED TO ROLLBACK"                 // FailedToRollback contains error message for failed to rollback
+	FailedToClose       = "FAILED TO CLOSE"                    // FailedToClose contains error message for failed to close
 )
