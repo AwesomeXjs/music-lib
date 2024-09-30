@@ -14,4 +14,10 @@ migrate-init:
 make up:
 	docker compose -f docker-compose.yml up -d
 
-# go install github.com/vektra/mockery/v2@v2.46.1 - mocks
+
+
+install-golangci-lint:
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.60.3
+
+lint:
+	golangci-lint run ./... --config .golangci.pipeline.yaml

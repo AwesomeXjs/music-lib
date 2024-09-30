@@ -7,6 +7,7 @@ import (
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
 )
 
+// Song - interface for song service
 type Song interface {
 	CreateSong(input model.SongCreate) (string, error)
 	UpdateSong(id string, input model.SongUpdate) error
@@ -17,10 +18,12 @@ type Song interface {
 	GetAllFromMockService() ([]helpers.MockSongs, error)
 }
 
+// Service - main service
 type Service struct {
 	Song
 }
 
+// New - create new service
 func New(repo *repository.Repository, logger logger.Logger) *Service {
 	client := helpers.NewCustomClient(logger)
 	return &Service{

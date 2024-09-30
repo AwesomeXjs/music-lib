@@ -1,5 +1,6 @@
 package logger
 
+// Logger default interface for logger
 type Logger interface {
 	Info(prefix, msg string)
 	Debug(prefix, msg string)

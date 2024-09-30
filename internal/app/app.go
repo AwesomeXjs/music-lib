@@ -12,6 +12,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+// App - main struct for app
 type App struct {
 	controller *controller.Controller
 	service    *service.Service
@@ -21,6 +22,7 @@ type App struct {
 	config *configs.Config
 }
 
+// New - create new app
 func New(database *sqlx.DB, myLogger logger.Logger, config *configs.Config) *App {
 	// Init app
 	app := &App{}
@@ -44,18 +46,19 @@ func New(database *sqlx.DB, myLogger logger.Logger, config *configs.Config) *App
 	return app
 }
 
+// Run - start service
 func (app *App) Run(myLogger logger.Logger, database *sqlx.DB) error {
 	go func(myLogger logger.Logger) {
 		myLogger.Info("SERVER", "Server running...")
 		err := app.Server.Start(app.config.AppPort)
 		if err != nil {
-			myLogger.Debug(helpers.APP_PREFIX, err.Error())
+			myLogger.Debug(helpers.AppPrefix, err.Error())
 		}
 	}(myLogger)
 
 	err := app.gracefulShutdown(myLogger, database)
 	if err != nil {
-		myLogger.Debug(helpers.APP_PREFIX, err.Error())
+		myLogger.Debug(helpers.AppPrefix, err.Error())
 		return err
 	}
 	return nil

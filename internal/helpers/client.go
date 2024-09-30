@@ -2,13 +2,15 @@ package helpers
 
 import (
 	"fmt"
-	"github.com/AwesomeXjs/music-lib/configs"
-	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"net"
 	"net/http"
 	"time"
+
+	"github.com/AwesomeXjs/music-lib/configs"
+	"github.com/AwesomeXjs/music-lib/pkg/logger"
 )
 
+// NewClient - creates new http client
 func NewClient() *http.Client {
 	transport := &http.Transport{
 		DialContext: (&net.Dialer{
@@ -29,19 +31,22 @@ func NewClient() *http.Client {
 	return client
 }
 
+// CustomClient - custom http client
 type CustomClient struct {
 	Client         *http.Client
 	Logger         logger.Logger
-	SideServiceUrl string
+	SideServiceURL string
 }
 
+// QueryParam - query param for request
 type QueryParam struct {
 	Key   string
 	Value string
 }
 
+// GetWithQuery - sends get request with query params
 func (c *CustomClient) GetWithQuery(resource string, query ...QueryParam) (*http.Response, error) {
-	request, err := http.NewRequest(http.MethodGet, c.SideServiceUrl+resource, nil)
+	request, err := http.NewRequest(http.MethodGet, c.SideServiceURL+resource, nil)
 
 	q := request.URL.Query()
 	for i := range query {
@@ -52,17 +57,18 @@ func (c *CustomClient) GetWithQuery(resource string, query ...QueryParam) (*http
 	req, err := c.Client.Get(request.URL.String())
 
 	if err != nil {
-		c.Logger.Info(RESPONSE_PREFIX, err.Error())
+		c.Logger.Info(ResponsePrefix, err.Error())
 		return nil, fmt.Errorf("%v", err)
 	}
 	return req, nil
 }
 
+// NewCustomClient - returns new http client
 func NewCustomClient(logger logger.Logger) *CustomClient {
 	config := configs.New(logger)
 	return &CustomClient{
 		Client:         NewClient(),
 		Logger:         logger,
-		SideServiceUrl: config.SideServiceUrl,
+		SideServiceURL: config.SideServiceURL,
 	}
 }

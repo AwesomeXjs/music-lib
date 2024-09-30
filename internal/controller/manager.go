@@ -1,18 +1,20 @@
 package controller
 
 import (
-	_ "github.com/AwesomeXjs/music-lib/docs"
+	_ "github.com/AwesomeXjs/music-lib/docs" // swagger docs
 	"github.com/AwesomeXjs/music-lib/internal/service"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"github.com/labstack/echo/v4"
-	"github.com/swaggo/echo-swagger"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
+// Controller - main controller
 type Controller struct {
 	service *service.Service
 	logger  logger.Logger
 }
 
+// New - create new controller
 func New(service *service.Service, logger logger.Logger) *Controller {
 	return &Controller{
 		service: service,
@@ -20,6 +22,7 @@ func New(service *service.Service, logger logger.Logger) *Controller {
 	}
 }
 
+// InitRoutes - init routes for API
 func (e *Controller) InitRoutes(server *echo.Echo) {
 	// Swagger init
 	server.GET("/swagger/*", echoSwagger.WrapHandler)

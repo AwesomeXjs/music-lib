@@ -1,11 +1,13 @@
 package configs
 
 import (
-	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"os"
 	"sync"
+
+	"github.com/AwesomeXjs/music-lib/pkg/logger"
 )
 
+// Config struct for env variables
 type Config struct {
 	Host     string
 	Port     string
@@ -15,7 +17,7 @@ type Config struct {
 	SSLMode  string
 
 	AppPort        string
-	SideServiceUrl string
+	SideServiceURL string
 }
 
 var (
@@ -23,6 +25,7 @@ var (
 	once   sync.Once
 )
 
+// New returns Config struct with env variables
 func New(logger logger.Logger) *Config {
 	once.Do(func() {
 		config = Config{
@@ -34,7 +37,7 @@ func New(logger logger.Logger) *Config {
 			SSLMode:  os.Getenv("DB_SSL_MODE"),
 
 			AppPort:        os.Getenv("APP_PORT"),
-			SideServiceUrl: os.Getenv("SIDE_SERVICE_URL"),
+			SideServiceURL: os.Getenv("SIDE_SERVICE_URL"),
 		}
 	})
 	logger.Info("Config", "Config init")

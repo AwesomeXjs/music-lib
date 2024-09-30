@@ -1,36 +1,71 @@
 package helpers
 
 const (
-	FAILED_TO_CREATE_ELEMENT = "FAILED_TO_CREATE_ELEMENT"
-	FAILED_TO_UPDATE_ELEMENT = "FAILED_TO_UPDATE_ELEMENT"
-	FAILED_TO_DELETE_ELEMENT = "FAILED_TO_DELETE_ELEMENT"
-	FAILED_TO_GET_ELEMENTS   = "FAILED_TO_GET_ELEMENTS"
-	SONG_ALREADY_EXIST       = "SONG_ALREADY_EXIST"
-	FAILED_TO_ROLLBACK       = "FAILED TO ROLLBACK"
-	FAILED_TO_CLOSE          = "FAILED TO CLOSE"
-	REQUEST_ERROR            = "REQUEST_ERROR"
+	// FailedToCreateElement contains error message for failed to create element
+	FailedToCreateElement = "FAILED_TO_CREATE_ELEMENT"
 
-	JSON_PARSE_ERROR = "JSON_PARSE_ERROR"
-	SUCCESS          = "SUCCESS"
+	// FailedToDeleteElement contains error message for failed to delete element
+	FailedToDeleteElement = "FAILED_TO_DELETE_ELEMENT"
 
-	DEFAULT_VALUE_FOR_FIELDS = "NOT FOUND"
+	// FailedToGetElements contains error message for failed to get elements
+	FailedToGetElements = "FAILED_TO_GET_ELEMENTS"
 
-	APP_PREFIX = " [ APP ] "
+	// FailedToRollback contains error message for failed to rollback
+	FailedToRollback = "FAILED TO ROLLBACK"
 
-	INFO_PREFIX     = " INFO "
-	STATUS_PREFIX   = " STATUS "
-	RESPONSE_PREFIX = " [ RESPONSE ] "
-	UNMARSHAL_ERROR = "UNMARSHAL_ERROR"
-	READ_BODY_ERROR = "READ_BODY_ERROR"
+	// FailedToClose contains error message for failed to close
+	FailedToClose = "FAILED TO CLOSE"
 
-	RECONECT_DB           = "RECONNECTING TO DATABASE..."
-	DISCONNECT_DB         = "DISCONNECTED FROM DATABASE"
-	PG_PREFIX             = " [ POSTGRES ] "
-	PG_CONNECTION_FAILED  = "FAILED TO CONNECT TO DATABASE"
-	PG_CONNECT_SUCCESS    = "SUCCESSFULLY CONNECTED TO POSTGRES"
-	PG_TRANSACTION_FAILED = "FAILED TO FETCH TRANSACTION"
-	PG_COMMIT_FAILED      = "FAILED TO COMMIT TRANSACTION"
+	// RequestError contains error message for failed to error
+	RequestError = "REQUEST_ERROR"
 
-	PG_MIGRATION_FAILED = "FAILED TO MIGRATE DATABASE"
-	NO_ROWS_AFFECTED    = "NO ROWS AFFECTED"
+	// JSONParseError contains error message for failed to parse json
+	JSONParseError = "JSON_PARSE_ERROR"
+
+	// Success contains success message
+	Success = "SUCCESS"
+
+	// DefaultValueForFields contains default value for fields
+	DefaultValueForFields = "NOT FOUND"
+
+	// AppPrefix contains app prefix
+	AppPrefix = " [ APP ] "
+
+	// InfoPrefix contains info prefix
+	InfoPrefix = " INFO "
+
+	// StatusPrefix contains status prefix
+	StatusPrefix = " STATUS "
+
+	// ResponsePrefix contains response prefix
+	ResponsePrefix = " [ RESPONSE ] "
+
+	// UnmarshalError contains error message for unmarshal error
+	UnmarshalError = "UNMARSHAL_ERROR"
+
+	// ReadBodyError contains error message for read body error
+	ReadBodyError = "READ_BODY_ERROR"
+
+	// ReconnectDB contains reconnect db message
+	ReconnectDB = "RECONNECTING TO DATABASE..."
+	// DisconnectDB contains disconnect db message
+	DisconnectDB = "DISCONNECTED FROM DATABASE"
+
+	// PgPrefix contains database prefix for logs
+	PgPrefix = " [ POSTGRES ] "
+
+	// PgConnectFailed contains error message for failed to connect to database
+	PgConnectFailed = "FAILED TO CONNECT TO DATABASE"
+
+	// PgConnectSuccess contains success message for successfully connected to database
+	PgConnectSuccess = "SUCCESSFULLY CONNECTED TO POSTGRES"
+
+	// PgTransactionFailed contains error message for failed to fetch transaction
+	PgTransactionFailed = "FAILED TO FETCH TRANSACTION"
+
+	// PgMigrateFailed contains error message for failed to migrate database
+	PgMigrateFailed = "FAILED TO MIGRATE DATABASE"
+
+	// NoRowsAffected contains error message for no rows affected
+	NoRowsAffected = "NO ROWS AFFECTED"
 )

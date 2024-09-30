@@ -3,21 +3,23 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+
 	"github.com/AwesomeXjs/music-lib/internal/helpers"
 	"github.com/AwesomeXjs/music-lib/internal/model"
 	"github.com/AwesomeXjs/music-lib/internal/repository"
 	"github.com/AwesomeXjs/music-lib/pkg/logger"
 	"github.com/google/uuid"
-	"io"
 )
 
+// SongService - interface for song service
 type SongService struct {
-	repo           *repository.Repository
-	logger         logger.Logger
-	sideServiceUrl string
-	client         *helpers.CustomClient
+	repo   *repository.Repository
+	logger logger.Logger
+	client *helpers.CustomClient
 }
 
+// NewSongService - create new song service
 func NewSongService(repo *repository.Repository, logger logger.Logger, client *helpers.CustomClient) *SongService {
 	return &SongService{
 		repo:   repo,
@@ -26,53 +28,64 @@ func NewSongService(repo *repository.Repository, logger logger.Logger, client *h
 	}
 }
 
+// CreateSong - create new song
 func (s *SongService) CreateSong(input model.SongCreate) (string, error) {
 	return s.repo.CreateSong(model.Song{
-		Id:    uuid.New().String(),
+		ID:    uuid.New().String(),
 		Group: input.Group,
 		Song:  input.Song,
 	})
 }
 
+// UpdateSong - update song
 func (s *SongService) UpdateSong(id string, input model.SongUpdate) error {
 	return s.repo.UpdateSong(id, input)
 }
 
+// DeleteSong - delete song
 func (s *SongService) DeleteSong(id string) error {
 	return s.repo.Song.DeleteSong(id)
 }
 
+// GetSongs - get songs
 func (s *SongService) GetSongs(group, song, createdAt, text, link string, page, limit int) ([]model.Song, error) {
 	offset := (page - 1) * limit
 	return s.repo.Song.GetSongs(group, song, createdAt, text, link, offset, limit)
 }
 
+// GetVerse - get verse of the song
 func (s *SongService) GetVerse(id string) (string, error) {
 	return s.repo.Song.GetVerse(id)
 }
 
+// FetchSongData - fetch song data from mock service
 func (s *SongService) FetchSongData(id string, input model.SongCreate) error {
 	req, err := s.client.GetWithQuery(
 		"/info",
 		helpers.QueryParam{Key: "group", Value: input.Group},
 		helpers.QueryParam{Key: "song", Value: input.Song})
 	if err != nil {
-		s.logger.Debug(helpers.PG_PREFIX, helpers.REQUEST_ERROR)
+		s.logger.Debug(helpers.PgPrefix, helpers.RequestError)
 		return fmt.Errorf("failed to get song data: %v", err)
 	}
 
-	defer req.Body.Close()
+	defer func(Body io.ReadCloser) {
+		if err = Body.Close(); err != nil {
+			s.logger.Debug(helpers.PgPrefix, err.Error())
+			return
+		}
+	}(req.Body)
 
 	var arr1 []model.SongUpdate
 	reqBody, err := io.ReadAll(req.Body)
 	if err != nil {
-		s.logger.Debug(helpers.PG_PREFIX, helpers.READ_BODY_ERROR)
+		s.logger.Debug(helpers.PgPrefix, helpers.ReadBodyError)
 		return fmt.Errorf("failed to read response body: %v", err)
 	}
 
 	err = json.Unmarshal(reqBody, &arr1)
 	if err != nil {
-		s.logger.Debug(helpers.PG_PREFIX, helpers.UNMARSHAL_ERROR)
+		s.logger.Debug(helpers.PgPrefix, helpers.UnmarshalError)
 		return fmt.Errorf("failed to unmarshal response body: %v", err)
 	}
 	// Если данные найдены, обновляем песню в базе
@@ -87,19 +100,25 @@ func (s *SongService) FetchSongData(id string, input model.SongCreate) error {
 	return nil
 }
 
+// GetAllFromMockService - get all songs from mock service
 func (s *SongService) GetAllFromMockService() ([]helpers.MockSongs, error) {
-	req, err := s.client.Client.Get(s.client.SideServiceUrl + "/info")
-	defer req.Body.Close()
+	req, err := s.client.Client.Get(s.client.SideServiceURL + "/info")
+	defer func(Body io.ReadCloser) {
+		if err = Body.Close(); err != nil {
+			s.logger.Debug(helpers.PgPrefix, err.Error())
+			return
+		}
+	}(req.Body)
 	var data []helpers.MockSongs
 	reqBody, err := io.ReadAll(req.Body)
 	if err != nil {
-		s.logger.Debug(helpers.PG_PREFIX, helpers.READ_BODY_ERROR)
+		s.logger.Debug(helpers.PgPrefix, helpers.ReadBodyError)
 		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
 	err = json.Unmarshal(reqBody, &data)
 
 	if err != nil {
-		s.logger.Debug(helpers.PG_PREFIX, helpers.UNMARSHAL_ERROR)
+		s.logger.Debug(helpers.PgPrefix, helpers.UnmarshalError)
 		return nil, fmt.Errorf("failed to unmarshal response body: %v", err)
 	}
 

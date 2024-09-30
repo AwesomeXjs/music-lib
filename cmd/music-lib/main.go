@@ -35,7 +35,7 @@ func main() {
 	// init database
 	postgres, err := db.New(config, myLogger)
 	if err != nil {
-		myLogger.Fatal(helpers.PG_PREFIX, helpers.PG_CONNECTION_FAILED)
+		myLogger.Fatal(helpers.PgPrefix, helpers.PgConnectFailed)
 	}
 
 	// Keep Alive Postgres
@@ -46,12 +46,12 @@ func main() {
 
 	// migrations
 	if err = db.MigrationUp(config, myLogger); err != nil {
-		myLogger.Fatal(helpers.PG_PREFIX, err.Error())
+		myLogger.Fatal(helpers.PgPrefix, err.Error())
 	}
 
 	// start server
 	err = myApp.Run(myLogger, postgres)
 	if err != nil {
-		myLogger.Fatal(helpers.APP_PREFIX, err.Error())
+		myLogger.Fatal(helpers.AppPrefix, err.Error())
 	}
 }
