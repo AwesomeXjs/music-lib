@@ -38,8 +38,8 @@ func (s *SongRepo) CreateSong(song model.Song) (string, error) {
 
 	var songID string
 	err := s.executeInTransaction(func(tx *sql.Tx) error {
-		query := "INSERT INTO $7 (id, group_name, song, text, link, release_date) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
-		result := tx.QueryRow(query, song.ID, song.Group, song.Song, song.Text, song.Link, song.ReleaseDate, db.SongsTable)
+		query := fmt.Sprintf("INSERT INTO %s (id, group_name, song, text, link, release_date) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", db.SongsTable)
+		result := tx.QueryRow(query, song.ID, song.Group, song.Song, song.Text, song.Link, song.ReleaseDate)
 		err := result.Scan(&songID)
 		if err != nil {
 			s.logger.Debug(helpers.PgPrefix, err.Error())
