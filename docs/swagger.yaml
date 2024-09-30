@@ -124,7 +124,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/helpers.Response'
-      summary: Get All from mockserver
+      summary: Get All from mock service
       tags:
       - MockServer
   /v1/songs:

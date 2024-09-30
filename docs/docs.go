@@ -24,7 +24,7 @@ const docTemplate = `{
                 "tags": [
                     "MockServer"
                 ],
-                "summary": "Get All from mockserver",
+                "summary": "Get All from mock service",
                 "operationId": "get-all",
                 "responses": {
                     "200": {
