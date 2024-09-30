@@ -17,9 +17,9 @@ const (
 	UnmarshalError = "UNMARSHAL_ERROR" // UnmarshalError contains error message for unmarshal error
 	ReadBodyError  = "READ_BODY_ERROR" // ReadBodyError contains error message for read body error
 
+	PgPrefix            = " [ POSTGRES ] "                     // PgPrefix contains database prefix for logs
 	ReconnectDB         = "RECONNECTING TO DATABASE..."        // ReconnectDB contains reconnect db message
 	DisconnectDB        = "DISCONNECTED FROM DATABASE"         // DisconnectDB contains disconnect db message
-	PgPrefix            = " [ POSTGRES ] "                     // PgPrefix contains database prefix for logs
 	PgConnectFailed     = "FAILED TO CONNECT TO DATABASE"      // PgConnectFailed contains error message for failed to connect to database
 	PgConnectSuccess    = "SUCCESSFULLY CONNECTED TO POSTGRES" // PgConnectSuccess contains success message for successfully connected to database
 	PgTransactionFailed = "FAILED TO FETCH TRANSACTION"        // PgTransactionFailed contains error message for failed to fetch transaction
