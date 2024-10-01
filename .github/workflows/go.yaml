@@ -12,33 +12,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache Go modules
+      - name: Cache Go modules for build
         uses: actions/cache@v3
         with:
-          # Путь для кэширования модулей Go и кэша сборок
           path: |
             ~/go/pkg/mod
             ~/.cache/go-build
-          # Уникальный ключ для сброса кэша
-          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}-${{ github.run_id }}
-          # Восстановление кэша, если точный ключ не найден
+          key: build-go-${{ runner.os }}-${{ github.run_id }}  
           restore-keys: |
-            ${{ runner.os }}-go-
+            build-go-${{ runner.os }}-
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
-          cache-dependency-path: go.sum
 
       - name: Build
         run: go build -o ./bin/ -v ./...
 
-  #      - name: Test
-  #        run: go test -v ./...
-
   linter:
-    name: lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -49,9 +41,9 @@ jobs:
           path: |
             ~/go/pkg/mod
             ~/.cache/go-build
-          key: ${{ runner.os }}-go-linter-${{ github.run_id }}
+          key: lint-go-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
-            ${{ runner.os }}-go-
+            lint-go-${{ runner.os }}-
 
       - uses: actions/setup-go@v5
         with:
@@ -63,4 +55,4 @@ jobs:
         with:
           version: v1.60
           args: --timeout=30m --config=./.golangci.pipeline.yaml
-          skip-cache: true  # Полное отключение кэширования для golangci-lint
+          skip-cache: true
