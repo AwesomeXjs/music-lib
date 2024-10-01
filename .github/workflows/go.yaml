@@ -26,6 +26,8 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
+          cache: true
+          cache-dependency-path: go.sum
 
       - name: Build
         run: go build -o ./bin/ -v ./...
@@ -41,10 +43,11 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
+          cache: false  # Отключаем кэш для линтера, если необходимо
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
           version: v1.60
           args: --timeout=30m --config=./.golangci.pipeline.yaml
-          skip-cache: true
+          skip-cache: true  # Отключение кэша для линтера
