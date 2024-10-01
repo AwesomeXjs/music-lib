@@ -18,9 +18,9 @@ jobs:
           path: |
             ~/go/pkg/mod
             ~/.cache/go-build
-          key: build-go-${{ runner.os }}-${{ hashFiles('go.sum') }}-${{ github.run_number }}
+          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}-${{ github.run_id }}
           restore-keys: |
-            build-go-${{ runner.os }}-
+            ${{ runner.os }}-go-${{ hashFiles('go.sum') }}-
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -31,8 +31,9 @@ jobs:
         run: go build -o ./bin/ -v ./...
 
   linter:
+    name: lint
     runs-on: ubuntu-latest
-    needs: build-and-test  # Зависит от build-and-test
+    needs: build-and-test
     steps:
       - uses: actions/checkout@v4
 
@@ -46,4 +47,4 @@ jobs:
         with:
           version: v1.60
           args: --timeout=30m --config=./.golangci.pipeline.yaml
-
+          skip-cache: true
